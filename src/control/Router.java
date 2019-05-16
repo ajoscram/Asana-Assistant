@@ -86,6 +86,11 @@ public class Router implements IRouter {
     public List<DisplayString> getTaskStrings(long projectId) {
         return projectController.getTaskStrings(projectId);
     }
+    
+    @Override
+    public List<DisplayString> getTaskStrings(long projectId, TaskFilter filter) {
+        return projectController.getTaskStrings(projectId, filter);
+    }
 
     @Override
     public void banUser(long projectId, long userId) {
@@ -125,6 +130,12 @@ public class Router implements IRouter {
     public void printReport(long projectId, String path, PrintFormat format) {
         IReportPrinter printer = getReportPrinter(format);
         projectController.printReport(projectId, path, printer);
+    }
+    
+    @Override
+    public void printReport(long projectId, String path, PrintFormat format, TaskFilter filter) {
+        IReportPrinter printer = getReportPrinter(format);
+        projectController.printReport(projectId, path, printer, filter);
     }
 
     @Override

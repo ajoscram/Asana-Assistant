@@ -3,6 +3,7 @@ package control;
 import control.dtos.DevelopmentDTO;
 import control.dtos.DisplayString;
 import control.dtos.ProjectDTO;
+import control.dtos.TaskFilter;
 import control.dtos.UserDTO;
 import java.util.List;
 import model.Development;
@@ -27,10 +28,12 @@ public interface IRouter {
     List<DisplayString> getActiveUserStrings(long projectId);
     List<DisplayString> getBannedUserStrings(long projectId);
     List<DisplayString> getTaskStrings(long projectId);
+    List<DisplayString> getTaskStrings(long projectId, TaskFilter filter);
     void banUser(long projectId, long userId);
     void unbanUser(long projectId, long userId);
     void synchronizeTasks(long projectId, String filepath, ParseFormat format);
     void printReport(long projectId, String path, PrintFormat format);
+    void printReport(long projectId, String path, PrintFormat format, TaskFilter filter);
     
     Task getTask(long id);
     List<DisplayString> getSubtaskStrings(long taskId);

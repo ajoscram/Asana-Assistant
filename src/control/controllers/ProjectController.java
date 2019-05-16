@@ -5,6 +5,7 @@ import control.dtos.ProjectDTO;
 import java.util.List;
 import model.Project;
 import control.dtos.TaskDTO;
+import control.dtos.TaskFilter;
 import parse.IParser;
 import report.IReportPrinter;
 
@@ -44,6 +45,10 @@ public class ProjectController {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
+    public List<DisplayString> getTaskStrings(long id, TaskFilter filter) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
     private void addTask(long projectId, TaskDTO task){
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -53,6 +58,10 @@ public class ProjectController {
     }
     
     public void printReport(long id, String path, IReportPrinter printer){
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    public void printReport(long id, String path, IReportPrinter printer, TaskFilter filter){
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }
