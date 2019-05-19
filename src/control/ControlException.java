@@ -3,7 +3,9 @@ package control;
 public class ControlException extends Exception {
 
     public enum Type { 
-        SUBTASK_NOT_TYPED_CORRECTLY
+        SUBTASK_NOT_TYPED_CORRECTLY,
+        UNKNOWN_PARSER_TYPE,
+        UNKNOWN_PRINTER_TYPE
     }
     
     private Type type;

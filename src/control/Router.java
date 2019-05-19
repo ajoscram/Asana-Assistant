@@ -102,38 +102,38 @@ public class Router implements IRouter {
         projectController.unbanUser(projectId, userId);
     }
 
-    private IParser<TaskDTO> getParser(IRouter.ParseFormat format){
+    private IParser<TaskDTO> getParser(IRouter.ParseFormat format) throws ControlException {
         switch(format){
             case JSON:
                 return new JSONParser<TaskDTO>();
             default:
-                return null; //change to throw exception!
+                throw new ControlException(ControlException.Type.UNKNOWN_PARSER_TYPE);
         }
     }
     
     @Override
-    public void synchronizeTasks(long projectId, String filepath, ParseFormat format) {
+    public void synchronizeTasks(long projectId, String filepath, ParseFormat format) throws ControlException {
         IParser parser = getParser(format);
         projectController.synchronizeTasks(projectId, filepath, parser);
     }
     
-    private IReportPrinter getReportPrinter(IRouter.PrintFormat format){
+    private IReportPrinter getReportPrinter(IRouter.PrintFormat format) throws ControlException {
         switch(format){
             case PDF:
                 return new PDFReportPrinter();
             default:
-                return null; //change to throw exception!
+                throw new ControlException(ControlException.Type.UNKNOWN_PRINTER_TYPE);
         }
     }
             
     @Override
-    public void printReport(long projectId, String path, PrintFormat format) {
+    public void printReport(long projectId, String path, PrintFormat format) throws ControlException {
         IReportPrinter printer = getReportPrinter(format);
         projectController.printReport(projectId, path, printer);
     }
     
     @Override
-    public void printReport(long projectId, String path, PrintFormat format, TaskFilter filter) {
+    public void printReport(long projectId, String path, PrintFormat format, TaskFilter filter) throws ControlException {
         IReportPrinter printer = getReportPrinter(format);
         projectController.printReport(projectId, path, printer, filter);
     }

@@ -1,16 +1,21 @@
 package control.controllers;
 
+import control.daos.EvidenceDAO;
 import model.Evidence;
 
 public class EvidenceController {
     
-    public EvidenceController(){}
+    private EvidenceDAO dao;
+    
+    public EvidenceController(){
+        dao = new EvidenceDAO();
+    }
     
     public Evidence getEvidence(long id){
-        throw new UnsupportedOperationException("Not supported yet.");
+        return dao.getEvidence(id);
     }
     
     public void downloadEvidence(long id, String path){
-        throw new UnsupportedOperationException("Not supported yet.");
+        dao.downloadEvidence(id, path);
     }
 }

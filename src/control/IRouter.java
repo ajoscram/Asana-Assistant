@@ -31,9 +31,9 @@ public interface IRouter {
     List<DisplayString> getTaskStrings(long projectId, TaskFilter filter);
     void banUser(long projectId, long userId);
     void unbanUser(long projectId, long userId);
-    void synchronizeTasks(long projectId, String filepath, ParseFormat format);
-    void printReport(long projectId, String path, PrintFormat format);
-    void printReport(long projectId, String path, PrintFormat format, TaskFilter filter);
+    void synchronizeTasks(long projectId, String filepath, ParseFormat format) throws ControlException;
+    void printReport(long projectId, String path, PrintFormat format) throws ControlException;
+    void printReport(long projectId, String path, PrintFormat format, TaskFilter filter) throws ControlException;
     
     Task getTask(long id);
     List<DisplayString> getSubtaskStrings(long taskId);
