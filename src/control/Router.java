@@ -4,10 +4,6 @@ import java.util.List;
 import control.controllers.*;
 import control.dtos.*;
 import model.*;
-import parse.IParser;
-import parse.parsers.JSONParser;
-import report.IReportPrinter;
-import report.printers.PDFReportPrinter;
 
 public class Router implements IRouter {
     private static Router INSTANCE;
@@ -32,6 +28,7 @@ public class Router implements IRouter {
         return INSTANCE;
     }
 
+    //Users
     @Override
     public User login(String email, String password) {
         return userController.login(email, password);
@@ -46,17 +43,28 @@ public class Router implements IRouter {
     public User getUser(long id) {
         return userController.getUser(id);
     }
-
+    
     @Override
-    public List<DisplayString> getAdminProjectStrings(long userId) {
-        return userController.getAdminProjectStrings(userId);
+    public List<DisplayString> getActiveUserStrings(long projectId) {
+        return userController.getActiveUserStrings(projectId);
     }
 
     @Override
-    public List<DisplayString> getCollabProjectStrings(long userId) {
-        return userController.getCollabProjectStrings(userId);
+    public List<DisplayString> getBannedUserStrings(long projectId) {
+        return userController.getBannedUserStrings(projectId);
+    }
+    
+    @Override
+    public DisplayString getAdministratorString(long projectId){
+        return userController.getAdministratorString(projectId);
+    }
+    
+    @Override
+    public DisplayString getAsigneeString(long taskId) {
+        return userController.getAsigneeString(taskId);
     }
 
+    //Projects
     @Override
     public void addProject(ProjectDTO dto) {
         projectController.addProject(dto);
@@ -68,30 +76,15 @@ public class Router implements IRouter {
     }
 
     @Override
-    public DisplayString getAdministratorString(long projectId){
-        return projectController.getAdministratorString(projectId);
+    public List<DisplayString> getAdminProjectStrings(long userId) {
+        return projectController.getAdminProjectStrings(userId);
+    }
+
+    @Override
+    public List<DisplayString> getCollabProjectStrings(long userId) {
+        return projectController.getCollabProjectStrings(userId);
     }
     
-    @Override
-    public List<DisplayString> getActiveUserStrings(long projectId) {
-        return projectController.getActiveUserStrings(projectId);
-    }
-
-    @Override
-    public List<DisplayString> getBannedUserStrings(long projectId) {
-        return projectController.getBannedUserStrings(projectId);
-    }
-
-    @Override
-    public List<DisplayString> getTaskStrings(long projectId) {
-        return projectController.getTaskStrings(projectId);
-    }
-    
-    @Override
-    public List<DisplayString> getTaskStrings(long projectId, TaskFilter filter) {
-        return projectController.getTaskStrings(projectId, filter);
-    }
-
     @Override
     public void banUser(long projectId, long userId) {
         projectController.banUser(projectId, userId);
@@ -102,45 +95,35 @@ public class Router implements IRouter {
         projectController.unbanUser(projectId, userId);
     }
 
-    private IParser<TaskDTO> getParser(IRouter.ParseFormat format) throws ControlException {
-        switch(format){
-            case JSON:
-                return new JSONParser<TaskDTO>();
-            default:
-                throw new ControlException(ControlException.Type.UNKNOWN_PARSER_TYPE);
-        }
-    }
-    
     @Override
-    public void synchronizeTasks(long projectId, String filepath, ParseFormat format) throws ControlException {
-        IParser parser = getParser(format);
-        projectController.synchronizeTasks(projectId, filepath, parser);
+    public void synchronize(long projectId, String filepath, ParseFormat format) throws ControlException {
+        projectController.synchronize(projectId, filepath, format);
     }
-    
-    private IReportPrinter getReportPrinter(IRouter.PrintFormat format) throws ControlException {
-        switch(format){
-            case PDF:
-                return new PDFReportPrinter();
-            default:
-                throw new ControlException(ControlException.Type.UNKNOWN_PRINTER_TYPE);
-        }
-    }
-            
+              
     @Override
     public void printReport(long projectId, String path, PrintFormat format) throws ControlException {
-        IReportPrinter printer = getReportPrinter(format);
-        projectController.printReport(projectId, path, printer);
+        projectController.printReport(projectId, path, format);
     }
     
     @Override
-    public void printReport(long projectId, String path, PrintFormat format, TaskFilter filter) throws ControlException {
-        IReportPrinter printer = getReportPrinter(format);
-        projectController.printReport(projectId, path, printer, filter);
+    public void printReport(long projectId, String path, PrintFormat format, Filter filter) throws ControlException {
+        projectController.printReport(projectId, path, format, filter);
     }
-
+    
+    //Tasks
     @Override
     public Task getTask(long id) {
         return taskController.getTask(id);
+    }
+    
+    @Override
+    public List<DisplayString> getTaskStrings(long projectId) {
+        return taskController.getTaskStrings(projectId);
+    }
+    
+    @Override
+    public List<DisplayString> getTaskStrings(long projectId, Filter filter) {
+        return taskController.getTaskStrings(projectId, filter);
     }
 
     @Override
@@ -148,13 +131,14 @@ public class Router implements IRouter {
         return taskController.getSubtaskStrings(taskId);
     }
 
+    //Developments
     @Override
     public List<DisplayString> getDevelopmentStrings(long taskId) {
-        return taskController.getDevelopmentStrings(taskId);
+        return developmentController.getDevelopmentStrings(taskId);
     }
 
     @Override
-    public void addDevelopment(DevelopmentDTO dto) {
+    public void addDevelopment(long taskId, DevelopmentDTO dto) {
         developmentController.addDevelopment(dto);
     }
 
@@ -162,15 +146,11 @@ public class Router implements IRouter {
     public Development getDevelopment(long id) {
         return developmentController.getDevelopment(id);
     }
-
-    @Override
-    public void addEvidence(long developmentId, String filepath){
-        developmentController.addEvidence(developmentId, filepath);
-    }
     
+    //Evidence
     @Override
     public List<DisplayString> getEvidenceStrings(long developmentId) {
-        return developmentController.getEvidenceStrings(developmentId);
+        return evidenceController.getEvidenceStrings(developmentId);
     }
 
     @Override

@@ -28,19 +28,35 @@ public class UserController {
         return dao.getUser(id);
     }
     
-    public List<DisplayString> getAdminProjectStrings(long id){
-        List<Project> projects = dao.getAdminProjects(id);
+    public DisplayString getAsigneeString(long id){
+        User user = dao.getAsignee(id);
+        return new DisplayString(user.getId(), user.getName());
+    }
+    
+    public DisplayString getAdministratorString(long projectId) {
+        User administrator = dao.getAdministrator(projectId);
+        return new DisplayString(administrator.getId(), administrator.getName());
+    }
+    
+    public List<DisplayString> getActiveUserStrings(long projectId) {
+        List<User> users = dao.getActiveUsers(projectId);
         List<DisplayString> strings = new ArrayList();
-        for(Project project : projects)
-            strings.add(new DisplayString(project.getId(), project.getName()));
+        String string;
+        for(User user : users){
+            string = user.getName() + " (" + user.getEmail() + ")";
+            strings.add(new DisplayString(user.getId(), string));
+        }
         return strings;
     }
     
-    public List<DisplayString> getCollabProjectStrings(long id){
-        List<Project> projects = dao.getCollabProjects(id);
+    public List<DisplayString> getBannedUserStrings(long projectId) {
+        List<User> users = dao.getBannedUsers(projectId);
         List<DisplayString> strings = new ArrayList();
-        for(Project project : projects)
-            strings.add(new DisplayString(project.getId(), project.getName()));
+        String string;
+        for(User user : users){
+            string = user.getName() + " (" + user.getEmail() + ")";
+            strings.add(new DisplayString(user.getId(), string));
+        }
         return strings;
     }
 }

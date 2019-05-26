@@ -1,9 +1,9 @@
 package control.daos;
 
 import control.dtos.DevelopmentDTO;
+import control.dtos.Filter;
 import java.util.List;
 import model.Development;
-import model.Evidence;
 
 public class DevelopmentDAO {
     public DevelopmentDAO(){}
@@ -16,11 +16,11 @@ public class DevelopmentDAO {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
-    public void addEvidence(long developmentId, String filepath){
+    public List<Development> getDevelopments(long taskId){
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
-    public List<Evidence> getEvidence(long developmentId){
+    public List<Development> getDevelopments(Filter filter){
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

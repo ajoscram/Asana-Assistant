@@ -4,22 +4,16 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class DevelopmentDTO {
-    private long taskId;
     private LocalDate date;
     private int hours;
     private String description;
-    private List<String> evidenceStrings;
+    private List<String> evidenceFilepaths;
 
-    public DevelopmentDTO(long taskId, LocalDate date, int hours, String description, List<String> evidenceStrings) {
-        this.taskId = taskId;
+    public DevelopmentDTO(LocalDate date, int hours, String description, List<String> evidenceFilepaths) {
         this.date = date;
         this.hours = hours;
         this.description = description;
-        this.evidenceStrings = evidenceStrings;
-    }
-
-    public long getTaskId() {
-        return taskId;
+        this.evidenceFilepaths = evidenceFilepaths;
     }
 
     public LocalDate getDate() {
@@ -34,7 +28,7 @@ public class DevelopmentDTO {
         return description;
     }
 
-    public List<String> getEvidenceStrings() {
-        return evidenceStrings;
+    public List<String> getEvidenceFilepaths() {
+        return evidenceFilepaths;
     }
 }

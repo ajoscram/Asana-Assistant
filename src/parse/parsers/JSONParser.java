@@ -2,6 +2,7 @@ package parse.parsers;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.simple.JSONArray;
@@ -10,8 +11,13 @@ import parse.IParser;
 import parse.ParseException;
 
 public class JSONParser<T> implements IParser {
-
-    public JSONParser(){}
+    
+    private Class<T> class_;
+    
+    public JSONParser(){
+        this.class_ = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+        System.out.println(this.class_);
+    }
     
     private Object read(String filepath) throws ParseException {
         try{

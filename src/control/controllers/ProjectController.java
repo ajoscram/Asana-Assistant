@@ -1,17 +1,19 @@
 package control.controllers;
 
+import control.ControlException;
+import control.IRouter;
 import control.daos.ProjectDAO;
 import control.dtos.DisplayString;
+import control.dtos.Filter;
 import control.dtos.ProjectDTO;
 import java.util.List;
 import model.Project;
 import control.dtos.TaskDTO;
-import control.dtos.TaskFilter;
 import java.util.ArrayList;
-import model.Task;
-import model.User;
 import parse.IParser;
+import parse.parsers.JSONParser;
 import report.IReportPrinter;
+import report.printers.PDFReportPrinter;
 
 public class ProjectController {
     
@@ -29,6 +31,22 @@ public class ProjectController {
         return dao.getProject(id);
     }
     
+    public List<DisplayString> getAdminProjectStrings(long id){
+        List<Project> projects = dao.getAdminProjects(id);
+        List<DisplayString> strings = new ArrayList();
+        for(Project project : projects)
+            strings.add(new DisplayString(project.getId(), project.getName()));
+        return strings;
+    }
+    
+    public List<DisplayString> getCollabProjectStrings(long id){
+        List<Project> projects = dao.getCollabProjects(id);
+        List<DisplayString> strings = new ArrayList();
+        for(Project project : projects)
+            strings.add(new DisplayString(project.getId(), project.getName()));
+        return strings;
+    }
+    
     public void banUser(long projectId, long userId){
         dao.banUser(projectId, userId);
     }
@@ -37,62 +55,33 @@ public class ProjectController {
         dao.unbanUser(projectId, userId);
     }
     
-    public DisplayString getAdministratorString(long id) {
-        User administrator = dao.getAdministrator(id);
-        return new DisplayString(administrator.getId(), administrator.getName());
-    }
-    
-    public List<DisplayString> getActiveUserStrings(long id) {
-        List<User> users = dao.getActiveUsers(id);
-        List<DisplayString> strings = new ArrayList();
-        String string;
-        for(User user : users){
-            string = user.getName() + " (" + user.getEmail() + ")";
-            strings.add(new DisplayString(user.getId(), string));
+    private IParser<TaskDTO> getParser(IRouter.ParseFormat format) throws ControlException {
+        switch(format){
+            case JSON:
+                return new JSONParser<TaskDTO>();
+            default:
+                throw new ControlException(ControlException.Type.UNKNOWN_PARSER_TYPE);
         }
-        return strings;
     }
     
-    public List<DisplayString> getBannedUserStrings(long id) {
-        List<User> users = dao.getBannedUsers(id);
-        List<DisplayString> strings = new ArrayList();
-        String string;
-        for(User user : users){
-            string = user.getName() + " (" + user.getEmail() + ")";
-            strings.add(new DisplayString(user.getId(), string));
+    public void synchronize(long projectId, String filepath, IRouter.ParseFormat format){
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    private IReportPrinter getReportPrinter(IRouter.PrintFormat format) throws ControlException {
+        switch(format){
+            case PDF:
+                return new PDFReportPrinter();
+            default:
+                throw new ControlException(ControlException.Type.UNKNOWN_PRINTER_TYPE);
         }
-        return strings;
     }
     
-    public List<DisplayString> getTaskStrings(long id) {
-        List<Task> tasks = dao.getTasks(id);
-        List<DisplayString> strings = new ArrayList();
-        for(Task task : tasks)
-            strings.add(new DisplayString(task.getId(), task.getName()));
-        return strings;
-    }
-    
-    public List<DisplayString> getTaskStrings(long id, TaskFilter filter) {
-        List<Task> tasks = dao.getTasks(id, filter);
-        List<DisplayString> strings = new ArrayList();
-        for(Task task : tasks)
-            strings.add(new DisplayString(task.getId(), task.getName()));
-        return strings;
-    }
-    
-    private void addTask(long projectId, TaskDTO task){
+    public void printReport(long id, String path, IRouter.PrintFormat format){
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
-    public void synchronizeTasks(long projectId, String filepath, IParser<TaskDTO> parser){
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-    
-    public void printReport(long id, String path, IReportPrinter printer){
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-    
-    public void printReport(long id, String path, IReportPrinter printer, TaskFilter filter){
+    public void printReport(long id, String path, IRouter.PrintFormat format, Filter filter){
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

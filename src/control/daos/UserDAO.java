@@ -2,7 +2,6 @@ package control.daos;
 
 import control.dtos.UserDTO;
 import java.util.List;
-import model.Project;
 import model.User;
 
 public class UserDAO {
@@ -21,11 +20,19 @@ public class UserDAO {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
-    public List<Project> getAdminProjects(long id){
+    public User getAsignee(long taskId){
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
-    public List<Project> getCollabProjects(long id){
+    public User getAdministrator(long projectId){
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    public List<User> getActiveUsers(long projectId){
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    public List<User> getBannedUsers(long projectId){
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

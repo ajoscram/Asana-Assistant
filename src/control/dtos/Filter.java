@@ -2,13 +2,13 @@ package control.dtos;
 
 import java.time.LocalDate;
 
-public class TaskFilter {
+public class Filter {
     private Long taskId;
     private Long asigneeId;
     private LocalDate start;
     private LocalDate end;
 
-    public TaskFilter(Long taskId, Long asigneeId, LocalDate start, LocalDate end) {
+    public Filter(Long taskId, Long asigneeId, LocalDate start, LocalDate end) {
         this.taskId = taskId;
         this.asigneeId = asigneeId;
         this.start = start;

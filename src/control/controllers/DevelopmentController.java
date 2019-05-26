@@ -6,7 +6,6 @@ import control.dtos.DisplayString;
 import java.util.ArrayList;
 import java.util.List;
 import model.Development;
-import model.Evidence;
 
 public class DevelopmentController {
     
@@ -24,15 +23,14 @@ public class DevelopmentController {
         return dao.getDevelopment(id);
     }
     
-    public void addEvidence(long developmentId, String filePath){
-        dao.addEvidence(developmentId, filePath);
-    }
-    
-    public List<DisplayString> getEvidenceStrings(long id){
-        List<Evidence> evidence_ = dao.getEvidence(id);
+    public List<DisplayString> getDevelopmentStrings(long id){
+        List<Development> developments = dao.getDevelopments(id);
         List<DisplayString> strings = new ArrayList();
-        for(Evidence evidence : evidence_)
-            strings.add(new DisplayString(evidence.getId(), evidence.getFilename()));
+        String string;
+        for(Development development : developments){
+            string = "[" + development.getDate() + "]" + development.getDescription();
+            strings.add(new DisplayString(development.getId(), string));
+        }
         return strings;
     }
 }

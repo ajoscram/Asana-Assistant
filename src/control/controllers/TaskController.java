@@ -2,11 +2,11 @@ package control.controllers;
 
 import control.daos.TaskDAO;
 import control.dtos.DisplayString;
+import control.dtos.Filter;
+import control.dtos.TaskDTO;
 import java.util.ArrayList;
 import java.util.List;
-import model.Development;
 import model.Task;
-import model.User;
 
 public class TaskController {
     
@@ -16,31 +16,35 @@ public class TaskController {
         dao = new TaskDAO();
     }
     
+    public void addTask(long projectId, TaskDTO task){
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
     public Task getTask(long id){
         return dao.getTask(id);
     }
     
-    public DisplayString getAsigneeString(long id){
-        User user = dao.getAsignee(id);
-        return new DisplayString(user.getId(), user.getName());
-    }
-    
-    public List<DisplayString> getSubtaskStrings(long id){
-        List<Task> subtasks = dao.getSubtasks();
+    public List<DisplayString> getTaskStrings(long projectId) {
+        List<Task> tasks = dao.getTasks(projectId);
         List<DisplayString> strings = new ArrayList();
-        for(Task task : subtasks)
+        for(Task task : tasks)
             strings.add(new DisplayString(task.getId(), task.getName()));
         return strings;
     }
     
-    public List<DisplayString> getDevelopmentStrings(long id){
-        List<Development> developments = dao.getDevelopments(id);
+    public List<DisplayString> getTaskStrings(long projectId, Filter filter) {
+        List<Task> tasks = dao.getTasks(projectId, filter);
         List<DisplayString> strings = new ArrayList();
-        String string;
-        for(Development development : developments){
-            string = "[" + development.getDate() + "]" + development.getDescription();
-            strings.add(new DisplayString(development.getId(), string));
-        }
+        for(Task task : tasks)
+            strings.add(new DisplayString(task.getId(), task.getName()));
+        return strings;
+    }
+    
+    public List<DisplayString> getSubtaskStrings(long id){
+        List<Task> subtasks = dao.getSubtasks(id);
+        List<DisplayString> strings = new ArrayList();
+        for(Task task : subtasks)
+            strings.add(new DisplayString(task.getId(), task.getName()));
         return strings;
     }
 }
