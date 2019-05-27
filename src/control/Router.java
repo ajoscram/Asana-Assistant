@@ -130,13 +130,13 @@ public class Router implements IRouter {
     public List<DisplayString> getSubtaskStrings(long taskId) {
         return taskController.getSubtaskStrings(taskId);
     }
-
-    //Developments
+    
     @Override
-    public List<DisplayString> getDevelopmentStrings(long taskId) {
-        return developmentController.getDevelopmentStrings(taskId);
+    public List<DisplayString> getSubtaskStrings(long taskId, Filter filter) {
+        return taskController.getSubtaskStrings(taskId, filter);
     }
 
+    //Developments
     @Override
     public void addDevelopment(long taskId, DevelopmentDTO dto) {
         developmentController.addDevelopment(dto);
@@ -145,6 +145,16 @@ public class Router implements IRouter {
     @Override
     public Development getDevelopment(long id) {
         return developmentController.getDevelopment(id);
+    }
+    
+    @Override
+    public List<DisplayString> getDevelopmentStrings(long taskId) {
+        return developmentController.getDevelopmentStrings(taskId);
+    }
+    
+    @Override
+    public List<DisplayString> getDevelopmentStrings(long taskId, Filter filter) {
+        return developmentController.getDevelopmentStrings(taskId, filter);
     }
     
     //Evidence

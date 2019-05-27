@@ -21,6 +21,10 @@ public class ListSection extends Section{
         sections.add(section);
     }
     
+    public void addSections(List<Section> sections){
+        sections.addAll(sections);
+    }
+    
     public void removeSection(String name) throws ReportException {
         for(Section section : sections){
             if(section.getName().equals(name)) {

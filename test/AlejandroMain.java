@@ -8,14 +8,12 @@ import report.printers.PDFReportPrinter;
 import report.sections.ListSection;
 import report.sections.TextSection;
 
-
-
 public class AlejandroMain {
 
     public static void main(String[] args) throws ReportException {
+        /*TEST REPORTES*/
         Report report = new Report();
         TextSection title = new TextSection("title", "Lorem Ipsum");
-        TextSection space = new TextSection("space", " ");
         TextSection paragraph = new TextSection("paragraph", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
         ListSection list = new ListSection("list");
         ListSection sublist = new ListSection("sublist");
@@ -28,9 +26,7 @@ public class AlejandroMain {
             list.addSection(new TextSection("item" + i, "Item #" + i));
         
         report.addSection(title);
-        report.addSection(space);
         report.addSection(paragraph);
-        report.addSection(space);
         report.addSection(list);
         
         new PDFReportPrinter().print(report, "C:\\Users\\Alejandro\\Desktop\\report.pdf");

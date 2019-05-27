@@ -22,6 +22,10 @@ public class Report {
         throw new ReportException(ReportException.Type.SECTION_NAME_NOT_FOUND);
     }
     
+    public void addSections(List<Section> sections){
+        sections.addAll(sections);
+    }
+    
     public void addSection(Section section){
         sections.add(section);
     }

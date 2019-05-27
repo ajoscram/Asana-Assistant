@@ -41,11 +41,13 @@ public interface IRouter {
     List<DisplayString> getTaskStrings(long projectId);
     List<DisplayString> getTaskStrings(long projectId, Filter filter);
     List<DisplayString> getSubtaskStrings(long taskId);
+    List<DisplayString> getSubtaskStrings(long taskId, Filter filter);
     
     //developments
     void addDevelopment(long taskId, DevelopmentDTO dto);
     Development getDevelopment(long id);
     List<DisplayString> getDevelopmentStrings(long taskId);
+    List<DisplayString> getDevelopmentStrings(long taskId, Filter filter);
     
     //evidence
     Evidence getEvidence(long id);

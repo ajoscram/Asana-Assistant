@@ -25,15 +25,16 @@ public class TaskController {
     }
     
     public List<DisplayString> getTaskStrings(long projectId) {
-        List<Task> tasks = dao.getTasks(projectId);
-        List<DisplayString> strings = new ArrayList();
-        for(Task task : tasks)
-            strings.add(new DisplayString(task.getId(), task.getName()));
-        return strings;
+        return getTaskStrings(projectId, null);
     }
     
+    //here filter only checks for task asignee
     public List<DisplayString> getTaskStrings(long projectId, Filter filter) {
-        List<Task> tasks = dao.getTasks(projectId, filter);
+        List<Task> tasks;
+        if(filter == null || filter.getAsigneeId() == null)
+            tasks = dao.getTasks(projectId);
+        else
+            tasks = dao.getTasks(projectId, filter.getAsigneeId());
         List<DisplayString> strings = new ArrayList();
         for(Task task : tasks)
             strings.add(new DisplayString(task.getId(), task.getName()));
@@ -41,7 +42,16 @@ public class TaskController {
     }
     
     public List<DisplayString> getSubtaskStrings(long id){
-        List<Task> subtasks = dao.getSubtasks(id);
+        return getSubtaskStrings(id, null);
+    }
+    
+    //here filter only checks for task asignee
+    public List<DisplayString> getSubtaskStrings(long id, Filter filter){
+        List<Task> subtasks;
+        if(filter == null || filter.getAsigneeId() == null)
+            subtasks = dao.getSubtasks(id);
+        else
+            subtasks = dao.getSubtasks(id);
         List<DisplayString> strings = new ArrayList();
         for(Task task : subtasks)
             strings.add(new DisplayString(task.getId(), task.getName()));
