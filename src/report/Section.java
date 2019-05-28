@@ -10,4 +10,12 @@ public abstract class Section {
     public String getName(){
         return name;
     }
+    
+    @Override
+    public String toString(){
+        if(name == null)
+            return "";
+        else
+            return name;
+    }
 }

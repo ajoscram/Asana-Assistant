@@ -22,7 +22,7 @@ public class ListSection extends Section{
     }
     
     public void addSections(List<Section> sections){
-        sections.addAll(sections);
+        this.sections.addAll(sections);
     }
     
     public void removeSection(String name) throws ReportException {

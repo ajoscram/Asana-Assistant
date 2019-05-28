@@ -23,7 +23,7 @@ public class Report {
     }
     
     public void addSections(List<Section> sections){
-        sections.addAll(sections);
+        this.sections.addAll(sections);
     }
     
     public void addSection(Section section){

@@ -1,6 +1,7 @@
 package control;
 
 import control.daos.DevelopmentDAO;
+import control.daos.EvidenceDAO;
 import control.daos.TaskDAO;
 import control.daos.UserDAO;
 import java.time.LocalDate;
@@ -8,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import model.Development;
+import model.Evidence;
 import model.Project;
 import model.Task;
 import model.User;
@@ -22,16 +24,18 @@ public class ProjectReportBuilder implements IReportBuilder{
     private UserDAO userDAO;
     private TaskDAO taskDAO;
     private DevelopmentDAO developmentDAO;
+    private EvidenceDAO evidenceDAO;
     
     private Task task;
     private User asignee;
     private LocalDate start;
     private LocalDate end;
     
-    public ProjectReportBuilder(){
-        this.userDAO = new UserDAO();
-        this.taskDAO = new TaskDAO();
-        this.developmentDAO = new DevelopmentDAO();
+    public ProjectReportBuilder(UserDAO userDAO, TaskDAO taskDAO, DevelopmentDAO developmentDAO, EvidenceDAO evidenceDAO){
+        this.userDAO = userDAO;
+        this.taskDAO = taskDAO;
+        this.developmentDAO = developmentDAO;
+        this.evidenceDAO = evidenceDAO;
     }
     
     public ProjectReportBuilder setAsignee(Long asigneeId) {
@@ -56,6 +60,20 @@ public class ProjectReportBuilder implements IReportBuilder{
         return this;
     }
     
+    private boolean validateAsignee(User taskAsignee){
+        if(asignee == null)
+            return true;
+        else if((asignee != null && taskAsignee != null) &&
+                (asignee.getId() == taskAsignee.getId()))
+            return true;
+        else
+            return false;
+    }
+    
+    private boolean validateTask(Task task){
+        return this.task == null || (this.task != null && task.getId() == this.task.getId());
+    }
+    
     private List<Section> getHeaderSections(Project project){
         ArrayList<Section> sections = new ArrayList();
         sections.add(new TextSection("name", project.getName()));
@@ -69,21 +87,21 @@ public class ProjectReportBuilder implements IReportBuilder{
         return sections;
     }
     
-    private boolean validateAsignee(User taskAsignee){
-        if(asignee == null)
-            return true;
-        else if((asignee != null && taskAsignee != null) &&
-                (asignee.getId() == taskAsignee.getId()))
-            return true;
-        else
-            return false;
+    private ListSection getDevelopmentSection(Development development){
+        ListSection developmentSection = new ListSection(development.getDate().format(DateTimeFormatter.ISO_DATE));
+        developmentSection.addSection(new TextSection("description", development.getDescription()));
+        developmentSection.addSection(new TextSection("work", development.getHours() + " hours"));
+        ListSection evidenceSection = new ListSection("evidence");
+        for(Evidence evidence : evidenceDAO.getEvidences(development.getId()))
+            evidenceSection.addSection(new TextSection(null, evidence.getFilename()));
+        developmentSection.addSection(evidenceSection);
+        return developmentSection;
     }
     
     private List<Section> getTaskSections(Task task, Task parent){
         ArrayList<Section> sections = new ArrayList();
         User taskAsignee = userDAO.getAsignee(task.getId());
-        List<Development> developments = developmentDAO.getDevelopments(task.getId(), start, end);
-        if(validateAsignee(taskAsignee)){
+        if(validateAsignee(taskAsignee) && validateTask(task)){
             ListSection taskSection = new ListSection(task.getName());
             taskSection.addSection(new TextSection("type", task.getType().toString()));
             if(parent != null)
@@ -94,7 +112,8 @@ public class ProjectReportBuilder implements IReportBuilder{
                 taskSection.addSection(new TextSection("due", task.getDue().format(DateTimeFormatter.ISO_DATE)));
             if(task.getCompleted() != null)
                 taskSection.addSection(new TextSection("completed", task.getCompleted().format(DateTimeFormatter.ISO_DATE)));
-            //missing code!
+            for(Development development : developmentDAO.getDevelopments(task.getId(), start, end))
+                taskSection.addSection(getDevelopmentSection(development));
             sections.add(taskSection);
         }
         for(Task subtask : taskDAO.getSubtasks(task.getId()))
@@ -112,11 +131,8 @@ public class ProjectReportBuilder implements IReportBuilder{
         Report report = new Report();
         report.addSections(getHeaderSections(project));
         ListSection taskSections = new ListSection("tasks");
-        if(task == null)
-            for(Task task_ : taskDAO.getTasks(project.getId()))
-                taskSections.addSections(getTaskSections(task_));
-        else
-            taskSections.addSections(getTaskSections(task));
+        for(Task task_ : taskDAO.getTasks(project.getId()))
+            taskSections.addSections(getTaskSections(task_));
         report.addSection(taskSections);
         return report;
     }

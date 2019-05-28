@@ -1,5 +1,6 @@
 package report.printers;
 
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -20,9 +21,9 @@ import report.sections.TextSection;
 public class PDFReportPrinter implements IReportPrinter {
     
     public PDFReportPrinter(){}
-   
-    private Paragraph getParagraph(TextSection section){
-        return new Paragraph(section.getText());
+    
+    private Chunk getChunk(TextSection section){
+        return new Chunk(section.getText());
     }
     
     private List getList(ListSection listSection) throws ReportException {
@@ -39,10 +40,20 @@ public class PDFReportPrinter implements IReportPrinter {
     private java.util.List<Element> parse(java.util.List<Section> sections) throws ReportException {
         ArrayList<Element> elements = new ArrayList();
         for(Section section : sections){
-            if(section instanceof ListSection)
+            if(section instanceof ListSection){
+                if(section.getName() != null)
+                    elements.add(new Paragraph(section.getName() + ": "));
                 elements.add(getList((ListSection)section));
-            else if(section instanceof TextSection)
-                elements.add(getParagraph((TextSection) section));
+            }
+            else if(section instanceof TextSection){
+                Paragraph text;
+                if(section.getName() != null)
+                    text = new Paragraph(section.getName() + ": ");
+                else
+                    text = new Paragraph();
+                text.add(getChunk((TextSection) section));
+                elements.add(text);
+            }
             else
                 throw new ReportException(ReportException.Type.UNKNOWN_SECTION_TYPE);
         }
@@ -55,9 +66,8 @@ public class PDFReportPrinter implements IReportPrinter {
             Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream(filepath));
             document.open();
-            for(Element element : parse(report.getSections())){
+            for(Element element : parse(report.getSections()))
                 document.add(element);
-            }
             document.close();
         } catch (FileNotFoundException ex) {
             throw new ReportException(ReportException.Type.FILE_IO_ERROR);
