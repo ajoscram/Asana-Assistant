@@ -101,7 +101,6 @@ public class JSONTaskParser implements IParser<List<TaskDTO>> {
             else
                 throw new ParseException(ParseException.Type.STRUCTURE);
         } catch(NullPointerException | ClassCastException ex) {
-            ex.printStackTrace();
             throw new ParseException(ParseException.Type.STRUCTURE);
         }
     }

@@ -12,6 +12,7 @@ import org.json.simple.JSONObject;
 //import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import control.JSONTaskParser;
+import control.daos.connection.Connection;
 import java.util.List;
 import model.Task;
 import report.Report;
@@ -54,11 +55,13 @@ public class AlejandroMain {
         Report report = builder.build(project);
         new PDFReportPrinter().print(report, "C:\\Users\\Alejandro\\Desktop\\report.pdf");*/
         
-        /*TEST TASK JSON PARSER*/
+        /*TEST TASK JSON PARSER
         JSONTaskParser parser = new JSONTaskParser();
         List<TaskDTO> tasks = parser.parse("tasks.json");
         for(TaskDTO task : tasks)
-            printTask(task, "");
+            printTask(task, "");*/
+        
+        Connection.connect();
         
     }
     
