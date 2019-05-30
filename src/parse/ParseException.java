@@ -3,7 +3,7 @@ package parse;
 public class ParseException extends Exception {
 
     public enum Type {
-        IO, //file can't be read from or found
+        FILE_IO_ERROR, //file can't be read from or found
         STRUCTURE, //file has incorrect structure
         
     }

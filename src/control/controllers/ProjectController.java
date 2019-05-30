@@ -3,6 +3,7 @@ package control.controllers;
 import control.ControlException;
 import control.IRouter;
 import control.daos.ProjectDAO;
+import control.daos.TaskDAO;
 import control.dtos.DisplayString;
 import control.dtos.Filter;
 import control.dtos.ProjectDTO;
@@ -11,8 +12,15 @@ import model.Project;
 import control.dtos.TaskDTO;
 import java.util.ArrayList;
 import parse.IParser;
-import parse.parsers.JSONParser;
+import control.JSONTaskParser;
+import control.ProjectReportBuilder;
+import control.daos.DevelopmentDAO;
+import control.daos.EvidenceDAO;
+import control.daos.UserDAO;
+import parse.ParseException;
 import report.IReportPrinter;
+import report.Report;
+import report.ReportException;
 import report.printers.PDFReportPrinter;
 
 public class ProjectController {
@@ -55,17 +63,21 @@ public class ProjectController {
         dao.unbanUser(projectId, userId);
     }
     
-    private IParser<TaskDTO> getParser(IRouter.ParseFormat format) throws ControlException {
+    private IParser<List<TaskDTO>> getParser(IRouter.ParseFormat format) throws ControlException {
         switch(format){
             case JSON:
-                return new JSONParser<TaskDTO>();
+                return new JSONTaskParser();
             default:
                 throw new ControlException(ControlException.Type.UNKNOWN_PARSER_TYPE);
         }
     }
     
-    public void synchronize(long projectId, String filepath, IRouter.ParseFormat format){
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void synchronize(long projectId, String filepath, IRouter.ParseFormat format) throws ControlException, ParseException{
+        IParser<List<TaskDTO>> parser = getParser(format);
+        List<TaskDTO> tasks = parser.parse(filepath);
+        TaskDAO taskDAO = new TaskDAO();
+        for(TaskDTO task : tasks)
+            taskDAO.addTask(projectId, task);
     }
     
     private IReportPrinter getReportPrinter(IRouter.PrintFormat format) throws ControlException {
@@ -77,11 +89,23 @@ public class ProjectController {
         }
     }
     
-    public void printReport(long id, String path, IRouter.PrintFormat format){
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void printReport(long id, String filepath, IRouter.PrintFormat format) throws ControlException, ReportException{
+        ProjectReportBuilder reportBuilder = new ProjectReportBuilder();
+        Project project = dao.getProject(id);
+        Report report = reportBuilder.build(project);
+        IReportPrinter printer = getReportPrinter(format);
+        printer.print(report, filepath);
     }
     
-    public void printReport(long id, String path, IRouter.PrintFormat format, Filter filter){
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void printReport(long id, String filepath, IRouter.PrintFormat format, Filter filter) throws ControlException, ReportException{
+        ProjectReportBuilder reportBuilder = new ProjectReportBuilder()
+                .setAsignee(filter.getAsigneeId())
+                .setTask(filter.getTaskId())
+                .setStart(filter.getStart())
+                .setEnd(filter.getEnd());
+        Project project = dao.getProject(id);
+        Report report = reportBuilder.build(project);
+        IReportPrinter printer = getReportPrinter(format);
+        printer.print(report, filepath);
     }
 }

@@ -11,6 +11,8 @@ import model.Evidence;
 import model.Project;
 import model.Task;
 import model.User;
+import parse.ParseException;
+import report.ReportException;
 
 public interface IRouter {
     enum ParseFormat { JSON }
@@ -32,9 +34,9 @@ public interface IRouter {
     List<DisplayString> getCollabProjectStrings(long userId);
     void banUser(long projectId, long userId);
     void unbanUser(long projectId, long userId);
-    void synchronize(long projectId, String filepath, ParseFormat format) throws ControlException;
-    void printReport(long projectId, String path, PrintFormat format) throws ControlException;
-    void printReport(long projectId, String path, PrintFormat format, Filter filter) throws ControlException;
+    void synchronize(long projectId, String filepath, ParseFormat format) throws ControlException, ParseException;
+    void printReport(long projectId, String filepath, PrintFormat format) throws ControlException, ReportException;
+    void printReport(long projectId, String filepath, PrintFormat format, Filter filter) throws ControlException, ReportException;
     
     //tasks
     Task getTask(long id);

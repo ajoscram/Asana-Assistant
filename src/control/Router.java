@@ -4,6 +4,8 @@ import java.util.List;
 import control.controllers.*;
 import control.dtos.*;
 import model.*;
+import parse.ParseException;
+import report.ReportException;
 
 public class Router implements IRouter {
     private static Router INSTANCE;
@@ -96,18 +98,18 @@ public class Router implements IRouter {
     }
 
     @Override
-    public void synchronize(long projectId, String filepath, ParseFormat format) throws ControlException {
+    public void synchronize(long projectId, String filepath, ParseFormat format) throws ControlException, ParseException  {
         projectController.synchronize(projectId, filepath, format);
     }
               
     @Override
-    public void printReport(long projectId, String path, PrintFormat format) throws ControlException {
-        projectController.printReport(projectId, path, format);
+    public void printReport(long projectId, String filepath, PrintFormat format) throws ControlException, ReportException {
+        projectController.printReport(projectId, filepath, format);
     }
     
     @Override
-    public void printReport(long projectId, String path, PrintFormat format, Filter filter) throws ControlException {
-        projectController.printReport(projectId, path, format, filter);
+    public void printReport(long projectId, String filepath, PrintFormat format, Filter filter) throws ControlException, ReportException {
+        projectController.printReport(projectId, filepath, format, filter);
     }
     
     //Tasks

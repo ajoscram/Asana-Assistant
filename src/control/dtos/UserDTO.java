@@ -4,9 +4,9 @@ public class UserDTO {
     private String name;
     private String email;
     private String password;
-    private long asanaId;
-
-    public UserDTO(String name, String email, String password, long asanaId) {
+    private Long asanaId;
+    
+    public UserDTO(String name, String email, String password, Long asanaId) {
         this.name = name;
         this.email = email;
         this.password = password;

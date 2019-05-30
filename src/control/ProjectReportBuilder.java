@@ -38,6 +38,13 @@ public class ProjectReportBuilder implements IReportBuilder{
         this.evidenceDAO = evidenceDAO;
     }
     
+    public ProjectReportBuilder(){
+        this.userDAO = new UserDAO();
+        this.taskDAO = new TaskDAO();
+        this.developmentDAO = new DevelopmentDAO();
+        this.evidenceDAO = new EvidenceDAO();
+    }
+    
     public ProjectReportBuilder setAsignee(Long asigneeId) {
         if(asigneeId != null)
             this.asignee = userDAO.getUser(asigneeId);
