@@ -2,6 +2,7 @@ package control.daos.connection;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.SQLException;
 import org.json.simple.JSONObject;
 import parse.IParser;
 import parse.ParseException;
@@ -36,7 +37,10 @@ class ConnectionParser implements IParser<Connection> {
             else
                 return new Connection(url, username, password);
         } catch(NullPointerException | ClassCastException ex) {
+            ex.printStackTrace();
             throw new ParseException(ParseException.Type.STRUCTURE);
+        } catch(SQLException ex) {
+            throw new ParseException(ParseException.Type.FILE_IO_ERROR);
         }
     }
     

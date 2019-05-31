@@ -5,7 +5,8 @@ public class ControlException extends Exception {
     public enum Type { 
         SUBTASK_NOT_TYPED_CORRECTLY,
         UNKNOWN_PARSER_TYPE,
-        UNKNOWN_PRINTER_TYPE
+        UNKNOWN_PRINTER_TYPE,
+        COULD_NOT_CONNECT_TO_DATABASE
     }
     
     private Type type;
