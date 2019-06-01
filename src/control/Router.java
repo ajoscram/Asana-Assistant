@@ -37,8 +37,8 @@ public class Router implements IRouter {
     }
 
     @Override
-    public void addUser(UserDTO user) throws ControlException {
-        userController.addUser(user);
+    public void registerUser(UserDTO user) throws ControlException {
+        userController.registerUser(user);
     }
 
     @Override

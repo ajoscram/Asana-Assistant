@@ -20,7 +20,7 @@ public interface IRouter {
     
     //users
     User login(String email, String password) throws ControlException;
-    void addUser(UserDTO user) throws ControlException;
+    void registerUser(UserDTO user) throws ControlException;
     User getUser(long id) throws ControlException;
     DisplayString getAsigneeString(long taskId) throws ControlException;
     DisplayString getAdministratorString(long projectId) throws ControlException;

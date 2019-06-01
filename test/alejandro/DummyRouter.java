@@ -31,7 +31,7 @@ public class DummyRouter implements IRouter {
     
     public DummyRouter(){
         users = new ArrayList();
-        users.add(new User(69, 69, "Alejandro Jimenez", "shuqk94@gmail.com", true));
+        users.add(new User(69, 69, "Alejandro Schmidt", "ajoscram@gmail.com", true));
         
         adminProjects = new ArrayList();
         adminProjects.add(new Project(0, "Proyecto 1 Diseño", LocalDate.now()));
@@ -74,7 +74,7 @@ public class DummyRouter implements IRouter {
     }
 
     @Override
-    public void addUser(UserDTO user) throws ControlException {}
+    public void registerUser(UserDTO user) throws ControlException {}
 
     @Override
     public User getUser(long id) throws ControlException {

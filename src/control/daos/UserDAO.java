@@ -16,18 +16,17 @@ public class UserDAO {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
+    public void registerUser(UserDTO user) throws ControlException{
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
     public void addUser(UserDTO user) throws ControlException{
-        String name = user.getName();
-        String password = user.getPassword();
-        String email = user.getEmail();
-        Long id = user.getAsanaId();
-        int registered;
-        if(email != null && id != null)
-            registered = 1;
-        else
-            registered = 0;
         try{
-            ResultSet rs = Connection.getInstance().query("exec usp_createuser '"+name+"', '"+password+"', '"+email+"', "+id+", "+registered);
+            String name = user.getName();
+            String password = user.getPassword();
+            String email = user.getEmail();
+            Long id = user.getAsanaId();
+            ResultSet rs = Connection.getInstance().query("exec usp_createuser '"+name+"', '"+password+"', '"+email+"', "+id);
         } catch(SQLException ex){
             //manejo de errores
         }

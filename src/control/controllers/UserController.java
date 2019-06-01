@@ -21,8 +21,8 @@ public class UserController {
         return dao.login(email, password);
     }
     
-    public void addUser(UserDTO dto) throws ControlException {
-        dao.addUser(dto);
+    public void registerUser(UserDTO dto) throws ControlException {
+        dao.registerUser(dto);
     }
     
     public User getUser(long id) throws ControlException {

@@ -4,8 +4,6 @@ import control.ControlException;
 import control.IRouter;
 import control.dtos.DisplayString;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import model.Project;
 import model.User;
