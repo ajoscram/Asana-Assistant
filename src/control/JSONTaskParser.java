@@ -1,6 +1,5 @@
 package control;
 
-import control.ControlException;
 import control.dtos.TaskDTO;
 import control.dtos.UserDTO;
 import java.io.FileReader;

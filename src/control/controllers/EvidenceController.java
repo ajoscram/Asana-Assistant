@@ -1,5 +1,6 @@
 package control.controllers;
 
+import control.ControlException;
 import control.daos.EvidenceDAO;
 import control.dtos.DisplayString;
 import java.util.ArrayList;
@@ -14,15 +15,15 @@ public class EvidenceController {
         dao = new EvidenceDAO();
     }
     
-    public void addEvidence(long developmentId, String filePath){
+    public void addEvidence(long developmentId, String filePath) throws ControlException {
         dao.addEvidence(developmentId, filePath);
     }
     
-    public Evidence getEvidence(long id){
+    public Evidence getEvidence(long id) throws ControlException {
         return dao.getEvidence(id);
     }
     
-    public List<DisplayString> getEvidenceStrings(long id){
+    public List<DisplayString> getEvidenceStrings(long id) throws ControlException {
         List<Evidence> evidence_ = dao.getEvidences(id);
         List<DisplayString> strings = new ArrayList();
         for(Evidence evidence : evidence_)
@@ -30,7 +31,7 @@ public class EvidenceController {
         return strings;
     }
     
-    public void downloadEvidence(long id, String path){
+    public void downloadEvidence(long id, String path) throws ControlException {
         dao.downloadEvidence(id, path);
     }
 }

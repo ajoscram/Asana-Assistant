@@ -1,7 +1,10 @@
+package alejandro;
 
+
+import control.ControlException;
+import control.IRouter;
 import control.ProjectReportBuilder;
 import control.dtos.TaskDTO;
-import daos.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -12,8 +15,12 @@ import org.json.simple.JSONObject;
 //import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import control.JSONTaskParser;
+import control.Router;
 import control.daos.connection.Connection;
 import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import model.Task;
 import report.Report;
 import report.ReportException;
@@ -21,6 +28,8 @@ import report.Section;
 import report.printers.PDFReportPrinter;
 import report.sections.ListSection;
 import report.sections.TextSection;
+import view.LoginFrame;
+import view.View;
 
 public class AlejandroMain {
 
@@ -60,9 +69,13 @@ public class AlejandroMain {
         List<TaskDTO> tasks = parser.parse("tasks.json");
         for(TaskDTO task : tasks)
             printTask(task, "");*/
-        
-        Connection.connect();
-        
+        /*UI TEST*/
+        try {
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+            View.display(new DummyRouter());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) { 
+            View.displayError(null, "You're not using Windows, so the interface might look a little clunky :(");
+        }
     }
     
     private static void printTask(TaskDTO task, String indent){

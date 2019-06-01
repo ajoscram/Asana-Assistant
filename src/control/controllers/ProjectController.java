@@ -31,15 +31,15 @@ public class ProjectController {
         dao = new ProjectDAO();
     }
     
-    public void addProject(ProjectDTO dto){
+    public void addProject(ProjectDTO dto) throws ControlException {
         dao.addProject(dto);
     }
     
-    public Project getProject(long id){
+    public Project getProject(long id) throws ControlException {
         return dao.getProject(id);
     }
     
-    public List<DisplayString> getAdminProjectStrings(long id){
+    public List<DisplayString> getAdminProjectStrings(long id) throws ControlException {
         List<Project> projects = dao.getAdminProjects(id);
         List<DisplayString> strings = new ArrayList();
         for(Project project : projects)
@@ -47,7 +47,7 @@ public class ProjectController {
         return strings;
     }
     
-    public List<DisplayString> getCollabProjectStrings(long id){
+    public List<DisplayString> getCollabProjectStrings(long id) throws ControlException {
         List<Project> projects = dao.getCollabProjects(id);
         List<DisplayString> strings = new ArrayList();
         for(Project project : projects)
@@ -55,11 +55,11 @@ public class ProjectController {
         return strings;
     }
     
-    public void banUser(long projectId, long userId){
+    public void banUser(long projectId, long userId) throws ControlException {
         dao.banUser(projectId, userId);
     }
     
-    public void unbanUser(long projectId, long userId){
+    public void unbanUser(long projectId, long userId) throws ControlException {
         dao.unbanUser(projectId, userId);
     }
     
@@ -97,7 +97,7 @@ public class ProjectController {
         printer.print(report, filepath);
     }
     
-    public void printReport(long id, String filepath, IRouter.PrintFormat format, Filter filter) throws ControlException, ReportException{
+    public void printReport(long id, String filepath, IRouter.PrintFormat format, Filter filter) throws ControlException, ReportException {
         ProjectReportBuilder reportBuilder = new ProjectReportBuilder()
                 .setAsignee(filter.getAsigneeId())
                 .setTask(filter.getTaskId())

@@ -1,5 +1,6 @@
 package control.controllers;
 
+import control.ControlException;
 import control.daos.TaskDAO;
 import control.dtos.DisplayString;
 import control.dtos.Filter;
@@ -16,20 +17,20 @@ public class TaskController {
         dao = new TaskDAO();
     }
     
-    public void addTask(long projectId, TaskDTO task){
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void addTask(long projectId, TaskDTO task) throws ControlException {
+        dao.addTask(projectId, task);
     }
     
-    public Task getTask(long id){
+    public Task getTask(long id) throws ControlException {
         return dao.getTask(id);
     }
     
-    public List<DisplayString> getTaskStrings(long projectId) {
+    public List<DisplayString> getTaskStrings(long projectId) throws ControlException {
         return getTaskStrings(projectId, null);
     }
     
     //here filter only checks for task asignee
-    public List<DisplayString> getTaskStrings(long projectId, Filter filter) {
+    public List<DisplayString> getTaskStrings(long projectId, Filter filter) throws ControlException {
         List<Task> tasks;
         if(filter == null || filter.getAsigneeId() == null)
             tasks = dao.getTasks(projectId);
@@ -41,12 +42,12 @@ public class TaskController {
         return strings;
     }
     
-    public List<DisplayString> getSubtaskStrings(long id){
+    public List<DisplayString> getSubtaskStrings(long id) throws ControlException {
         return getSubtaskStrings(id, null);
     }
     
     //here filter only checks for task asignee
-    public List<DisplayString> getSubtaskStrings(long id, Filter filter){
+    public List<DisplayString> getSubtaskStrings(long id, Filter filter) throws ControlException {
         List<Task> subtasks;
         if(filter == null || filter.getAsigneeId() == null)
             subtasks = dao.getSubtasks(id);

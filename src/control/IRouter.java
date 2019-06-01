@@ -19,40 +19,40 @@ public interface IRouter {
     enum PrintFormat { PDF }
     
     //users
-    User login(String email, String password);
-    void addUser(UserDTO user);
-    User getUser(long id);
-    DisplayString getAsigneeString(long taskId);
-    DisplayString getAdministratorString(long projectId);
-    List<DisplayString> getActiveUserStrings(long projectId);
-    List<DisplayString> getBannedUserStrings(long projectId);
+    User login(String email, String password) throws ControlException;
+    void addUser(UserDTO user) throws ControlException;
+    User getUser(long id) throws ControlException;
+    DisplayString getAsigneeString(long taskId) throws ControlException;
+    DisplayString getAdministratorString(long projectId) throws ControlException;
+    List<DisplayString> getActiveUserStrings(long projectId) throws ControlException;
+    List<DisplayString> getBannedUserStrings(long projectId) throws ControlException;
     
     //projects
-    void addProject(ProjectDTO project);
-    Project getProject(long id);
-    List<DisplayString> getAdminProjectStrings(long userId);
-    List<DisplayString> getCollabProjectStrings(long userId);
-    void banUser(long projectId, long userId);
-    void unbanUser(long projectId, long userId);
+    void addProject(ProjectDTO project) throws ControlException;
+    Project getProject(long id) throws ControlException;
+    List<DisplayString> getAdminProjectStrings(long userId) throws ControlException;
+    List<DisplayString> getCollabProjectStrings(long userId) throws ControlException;
+    void banUser(long projectId, long userId) throws ControlException;
+    void unbanUser(long projectId, long userId) throws ControlException;
     void synchronize(long projectId, String filepath, ParseFormat format) throws ControlException, ParseException;
     void printReport(long projectId, String filepath, PrintFormat format) throws ControlException, ReportException;
     void printReport(long projectId, String filepath, PrintFormat format, Filter filter) throws ControlException, ReportException;
     
     //tasks
-    Task getTask(long id);
-    List<DisplayString> getTaskStrings(long projectId);
-    List<DisplayString> getTaskStrings(long projectId, Filter filter);
-    List<DisplayString> getSubtaskStrings(long taskId);
-    List<DisplayString> getSubtaskStrings(long taskId, Filter filter);
+    Task getTask(long id) throws ControlException;
+    List<DisplayString> getTaskStrings(long projectId) throws ControlException;
+    List<DisplayString> getTaskStrings(long projectId, Filter filter) throws ControlException;
+    List<DisplayString> getSubtaskStrings(long taskId) throws ControlException;
+    List<DisplayString> getSubtaskStrings(long taskId, Filter filter) throws ControlException;
     
     //developments
-    void addDevelopment(long taskId, DevelopmentDTO dto);
-    Development getDevelopment(long id);
-    List<DisplayString> getDevelopmentStrings(long taskId);
-    List<DisplayString> getDevelopmentStrings(long taskId, Filter filter);
+    void addDevelopment(long taskId, DevelopmentDTO dto) throws ControlException;
+    Development getDevelopment(long id) throws ControlException;
+    List<DisplayString> getDevelopmentStrings(long taskId) throws ControlException;
+    List<DisplayString> getDevelopmentStrings(long taskId, Filter filter) throws ControlException;
     
     //evidence
-    Evidence getEvidence(long id);
-    List<DisplayString> getEvidenceStrings(long developmentId);
-    void downloadEvidence(long evidenceId, String path);
+    Evidence getEvidence(long id) throws ControlException;
+    List<DisplayString> getEvidenceStrings(long developmentId) throws ControlException;
+    void downloadEvidence(long evidenceId, String path) throws ControlException;
 }

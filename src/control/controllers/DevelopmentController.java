@@ -1,5 +1,6 @@
 package control.controllers;
 
+import control.ControlException;
 import control.daos.DevelopmentDAO;
 import control.dtos.DevelopmentDTO;
 import control.dtos.DisplayString;
@@ -16,19 +17,19 @@ public class DevelopmentController {
         dao = new DevelopmentDAO();
     }
     
-    public void addDevelopment(DevelopmentDTO dto){
+    public void addDevelopment(DevelopmentDTO dto) throws ControlException {
         dao.addDevelopment(dto);
     }
     
-    public Development getDevelopment(long id){
+    public Development getDevelopment(long id) throws ControlException {
         return dao.getDevelopment(id);
     }
     
-    public List<DisplayString> getDevelopmentStrings(long id){
+    public List<DisplayString> getDevelopmentStrings(long id) throws ControlException {
         return getDevelopmentStrings(id, null);
     }
     
-    public List<DisplayString> getDevelopmentStrings(long id, Filter filter){
+    public List<DisplayString> getDevelopmentStrings(long id, Filter filter) throws ControlException {
         List<Development> developments;
         if(filter == null)
             developments = dao.getDevelopments(id);
