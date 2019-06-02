@@ -17,19 +17,35 @@ public class UserDAO {
     }
     
     public void registerUser(UserDTO user) throws ControlException{
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-    
-    public void addUser(UserDTO user) throws ControlException{
         try{
             String name = user.getName();
             String password = user.getPassword();
             String email = user.getEmail();
             Long id = user.getAsanaId();
-            ResultSet rs = Connection.getInstance().query("exec usp_createuser '"+name+"', '"+password+"', '"+email+"', "+id);
+            Connection.getInstance().query("EXEC USP_REGISTERUSER '"+name+"','"+email+"',"+id+",'"+password+"'");
+            System.out.print("Usuario Agregado Exitosamente");
         } catch(SQLException ex){
-            //manejo de errores
+            int errorCode = ex.getErrorCode();
+            String errorMessage = ex.getMessage();
+            switch(errorCode){
+                case 70000:
+                    throw new ControlException(ControlException.Type.EMPTY_SPACES,errorMessage);
+                case 70001:
+                    throw new ControlException(ControlException.Type.DUPLICATE_VALUE,errorMessage);
+                case 103:
+                    throw new ControlException(ControlException.Type.INVALID_LENGTH,errorMessage);
+                case 8114:
+                    throw new ControlException(ControlException.Type.INCOMPATIBLE_TYPE,errorMessage);
+                case 77777:
+                    throw new ControlException(ControlException.Type.UNKNOWN_ERROR,errorMessage);
+                default:
+                    break;
+            }
         }
+    }
+    
+    public void addUser(UserDTO user) throws ControlException{
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
     public User getUser(long id){
