@@ -209,7 +209,8 @@ public class ProjectFrame extends javax.swing.JFrame {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode)path.getLastPathComponent();
                 DisplayString string = (DisplayString)node.getUserObject();
                 Task task = router.getTask(string.getId());
-                new TaskDialog(this, router, task, user).setVisible(true);
+                new TaskFrame(this, router, task, user).setVisible(true);
+                this.setVisible(false);
             } catch (ControlException ex) {
                 View.displayError(this, ex);
             }
@@ -295,6 +296,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         bannedCollaboratorsPopupMenu.add(unbanCollaboratorPopupMenuItem);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(970, 700));
 
         tasksPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Tasks"));
         tasksPanel.setComponentPopupMenu(tasksPopupMenu);
@@ -313,7 +315,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         tasksPanel.setLayout(tasksPanelLayout);
         tasksPanelLayout.setHorizontalGroup(
             tasksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tasksScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 627, Short.MAX_VALUE)
+            .addComponent(tasksScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 625, Short.MAX_VALUE)
         );
         tasksPanelLayout.setVerticalGroup(
             tasksPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

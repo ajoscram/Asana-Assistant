@@ -12,6 +12,11 @@ public class ControlException extends Exception {
     
     private Type type;
     
+    public ControlException(Type type, String message) {
+        super(message);
+        this.type = type;
+    }
+    
     public ControlException(Type type) {
         super(type.toString());
         this.type = type;
