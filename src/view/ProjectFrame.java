@@ -4,15 +4,20 @@ import control.ControlException;
 import control.IRouter;
 import control.dtos.DisplayString;
 import control.dtos.Filter;
+import java.awt.event.ItemEvent;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import model.Project;
+import model.Task;
 import model.User;
 
 public class ProjectFrame extends javax.swing.JFrame {
+    
+    private static final String NONE = "";
 
     private UserFrame parent;
     private IRouter router;
@@ -43,11 +48,9 @@ public class ProjectFrame extends javax.swing.JFrame {
             List<DisplayString> tasks = router.getTaskStrings(project.getId());
             
             //tasks
-            
             this.tasksTree.setCellRenderer(new TaskTreeCellRenderer(router));
             this.tasksTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
             this.tasksTree.setModel(tasksTreeModel);
-            refreshTasksTree(Filter.EMPTY);
             this.tasksTree.setShowsRootHandles(true);
             
             //collaborator lists
@@ -59,16 +62,27 @@ public class ProjectFrame extends javax.swing.JFrame {
                 bannedCollaboratorsListModel.addElement(collaborator);
 
             //filters
-            this.collaboratorFilterComboBox.addItem(new DisplayString(-1, " -"));
+            this.collaboratorFilterComboBox.addItem(NONE);
             this.collaboratorFilterComboBox.setSelectedIndex(0);
             for(DisplayString collaborator : activeCollaborators)
                 this.collaboratorFilterComboBox.addItem(collaborator);
             for(DisplayString collaborator : bannedCollaborators)
                 this.collaboratorFilterComboBox.addItem(collaborator);
-            this.taskFilterComboBox.addItem(new DisplayString(-1, " -"));
+            this.taskFilterComboBox.addItem(NONE);
             this.taskFilterComboBox.setSelectedIndex(0);
             for(DisplayString task : tasks)
                 this.taskFilterComboBox.addItem(task);
+            
+            //removing functionalities from non-administrators
+            if(!isAdministrator){
+                this.optionsMenu.remove(synchronizeMenuItem);
+                this.tasksPopupMenu.remove(synchronizePopupMenuItem);
+                this.activeCollaboratorsPopupMenu.remove(banCollaboratorPopupMenuItem);
+                this.bannedCollaboratorsPopupMenu.remove(unbanCollaboratorPopupMenuItem);
+                this.optionsMenu.remove(optionsSeparator);
+                this.optionsMenu.remove(banCollaboratorMenuItem);
+                this.optionsMenu.remove(unbanCollaboratorMenuItem);
+            }
         } catch(ControlException ex){
             View.displayError(parent, ex);
             this.dispose();
@@ -82,7 +96,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         return node;
     }
     
-    private void refreshTasksTree(Filter filter){
+    private void filterTasks(Filter filter){
         try{
             DefaultMutableTreeNode root = (DefaultMutableTreeNode)tasksTreeModel.getRoot();
             root.removeAllChildren();
@@ -97,12 +111,23 @@ public class ProjectFrame extends javax.swing.JFrame {
         }
     }
     
+    private void resetFilters(){
+        taskFilterComboBox.setSelectedItem(NONE);
+        collaboratorFilterComboBox.setSelectedItem(NONE);
+    }
+    
     private void refreshFilters(){
         try{
+            List<DisplayString> tasks = router.getTaskStrings(project.getId());
+            taskFilterComboBox.removeAllItems();
+            this.collaboratorFilterComboBox.addItem(NONE);
+            for(DisplayString task : tasks)
+                taskFilterComboBox.addItem(task);
+            
             List<DisplayString> activeCollaborators = router.getActiveUserStrings(project.getId());
             List<DisplayString> bannedCollaborators = router.getBannedUserStrings(project.getId());
-            
-            this.collaboratorFilterComboBox.addItem(new DisplayString(-1, "-"));
+            collaboratorFilterComboBox.removeAllItems();
+            this.collaboratorFilterComboBox.addItem(NONE);
             this.collaboratorFilterComboBox.setSelectedIndex(0);
             for(DisplayString collaborator : activeCollaborators)
                 this.collaboratorFilterComboBox.addItem(collaborator);
@@ -110,6 +135,23 @@ public class ProjectFrame extends javax.swing.JFrame {
                 this.collaboratorFilterComboBox.addItem(collaborator);
         } catch(ControlException ex){
             View.displayError(this, ex);
+        }
+    }
+    
+    public void filtersChanged(java.awt.event.ItemEvent evt){
+        if(evt.getStateChange() == ItemEvent.SELECTED){
+            Filter filter;
+            Object task = taskFilterComboBox.getSelectedItem();
+            Object collaborator = collaboratorFilterComboBox.getSelectedItem();
+            if(task instanceof DisplayString && collaborator instanceof DisplayString)
+                filter = new Filter(((DisplayString)task).getId(), ((DisplayString)collaborator).getId(), null, null);
+            else if(task instanceof DisplayString)
+                filter = new Filter(((DisplayString)task).getId(), null, null, null);
+            else if(collaborator instanceof DisplayString)
+                filter = new Filter(null, ((DisplayString)collaborator).getId(), null, null);
+            else
+                filter = new Filter(null, null, null, null);
+            filterTasks(filter);
         }
     }
     
@@ -127,6 +169,50 @@ public class ProjectFrame extends javax.swing.JFrame {
                 bannedCollaboratorsListModel.addElement(collaborator);
         } catch(ControlException ex){
             View.displayError(this, ex);
+        }
+    }
+    
+    private void banSelectedCollaborator(){
+        DisplayString collaborator = (DisplayString)activeCollaboratorsList.getSelectedValue();
+        if(collaborator == null)
+            View.displayError(this, "You must select an active collaborator to ban.");
+        else{
+            try {
+                router.banUser(project.getId(), collaborator.getId());
+                refreshCollaboratorLists();
+            } catch (ControlException ex) {
+                View.displayError(this, ex);
+            }
+        }
+    }
+    
+    private void unbanSelectedCollaborator(){
+        DisplayString collaborator = (DisplayString)bannedCollaboratorsList.getSelectedValue();
+        if(collaborator == null)
+            View.displayError(this, "You must select a banned collaborator to un-ban.");
+        else{
+            try {
+                router.unbanUser(project.getId(), collaborator.getId());
+                refreshCollaboratorLists();
+            } catch (ControlException ex) {
+                View.displayError(this, ex);
+            }
+        }
+    }
+    
+    private void openSelectedTask(){
+        TreePath path = tasksTree.getSelectionPath();
+        if(path == null)
+            View.displayError(this, "You must select a task to open.");
+        else{
+            try {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode)path.getLastPathComponent();
+                DisplayString string = (DisplayString)node.getUserObject();
+                Task task = router.getTask(string.getId());
+                new TaskDialog(this, router, task, user).setVisible(true);
+            } catch (ControlException ex) {
+                View.displayError(this, ex);
+            }
         }
     }
 
@@ -148,9 +234,9 @@ public class ProjectFrame extends javax.swing.JFrame {
         tasksTree = new javax.swing.JTree();
         collaboratorsTabbedPane = new javax.swing.JTabbedPane();
         activeCollaboratorsScrollPane = new javax.swing.JScrollPane();
-        activeCollaboratorsList = new javax.swing.JList<>();
+        activeCollaboratorsList = new javax.swing.JList();
         bannedCollaboratorsScrollPane = new javax.swing.JScrollPane();
-        bannedCollaboratorsList = new javax.swing.JList<>();
+        bannedCollaboratorsList = new javax.swing.JList();
         filtersPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         taskFilterComboBox = new javax.swing.JComboBox();
@@ -166,14 +252,24 @@ public class ProjectFrame extends javax.swing.JFrame {
         resetFiltersMenuItem = new javax.swing.JMenuItem();
         synchronizeMenuItem = new javax.swing.JMenuItem();
         reportMenuItem = new javax.swing.JMenuItem();
-        jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        optionsSeparator = new javax.swing.JPopupMenu.Separator();
         banCollaboratorMenuItem = new javax.swing.JMenuItem();
         unbanCollaboratorMenuItem = new javax.swing.JMenuItem();
 
         openTaskPopupMenuItem.setText("Open Selected Task");
+        openTaskPopupMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openTaskPopupMenuItemActionPerformed(evt);
+            }
+        });
         tasksPopupMenu.add(openTaskPopupMenuItem);
 
         resetFiltersPopupMenuItem.setText("Reset Task Filters");
+        resetFiltersPopupMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetFiltersPopupMenuItemActionPerformed(evt);
+            }
+        });
         tasksPopupMenu.add(resetFiltersPopupMenuItem);
 
         synchronizePopupMenuItem.setText("Synchronize Tasks");
@@ -183,9 +279,19 @@ public class ProjectFrame extends javax.swing.JFrame {
         tasksPopupMenu.add(reportPopupMenuItem);
 
         banCollaboratorPopupMenuItem.setText("Ban Selected Collaborator");
+        banCollaboratorPopupMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                banCollaboratorPopupMenuItemActionPerformed(evt);
+            }
+        });
         activeCollaboratorsPopupMenu.add(banCollaboratorPopupMenuItem);
 
         unbanCollaboratorPopupMenuItem.setText("Un-ban Selected Collaborator");
+        unbanCollaboratorPopupMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                unbanCollaboratorPopupMenuItemActionPerformed(evt);
+            }
+        });
         bannedCollaboratorsPopupMenu.add(unbanCollaboratorPopupMenuItem);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -236,7 +342,19 @@ public class ProjectFrame extends javax.swing.JFrame {
 
         jLabel1.setText("Task:");
 
+        taskFilterComboBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                taskFilterComboBoxItemStateChanged(evt);
+            }
+        });
+
         jLabel2.setText("Collaborator:");
+
+        collaboratorFilterComboBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                collaboratorFilterComboBoxItemStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout filtersPanelLayout = new javax.swing.GroupLayout(filtersPanel);
         filtersPanel.setLayout(filtersPanelLayout);
@@ -281,6 +399,11 @@ public class ProjectFrame extends javax.swing.JFrame {
 
         exitMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
         exitMenuItem.setText("Exit Asana Assistant");
+        exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitMenuItemActionPerformed(evt);
+            }
+        });
         navigationMenu.add(exitMenuItem);
 
         menuBar.add(navigationMenu);
@@ -298,6 +421,11 @@ public class ProjectFrame extends javax.swing.JFrame {
 
         resetFiltersMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
         resetFiltersMenuItem.setText("Reset Task Filters");
+        resetFiltersMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetFiltersMenuItemActionPerformed(evt);
+            }
+        });
         optionsMenu.add(resetFiltersMenuItem);
 
         synchronizeMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
@@ -307,7 +435,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         reportMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
         reportMenuItem.setText("Print Report");
         optionsMenu.add(reportMenuItem);
-        optionsMenu.add(jSeparator2);
+        optionsMenu.add(optionsSeparator);
 
         banCollaboratorMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_MASK));
         banCollaboratorMenuItem.setText("Ban Selected Collaborator");
@@ -320,6 +448,11 @@ public class ProjectFrame extends javax.swing.JFrame {
 
         unbanCollaboratorMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         unbanCollaboratorMenuItem.setText("Un-ban Selected Collaborator");
+        unbanCollaboratorMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                unbanCollaboratorMenuItemActionPerformed(evt);
+            }
+        });
         optionsMenu.add(unbanCollaboratorMenuItem);
 
         menuBar.add(optionsMenu);
@@ -353,22 +486,58 @@ public class ProjectFrame extends javax.swing.JFrame {
         parent.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_returnMenuItemActionPerformed
-
+    
     private void banCollaboratorMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_banCollaboratorMenuItemActionPerformed
-        // TODO add your handling code here:
+        banSelectedCollaborator();
     }//GEN-LAST:event_banCollaboratorMenuItemActionPerformed
 
     private void openTaskMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openTaskMenuItemActionPerformed
-        // TODO add your handling code here:
+        openSelectedTask();
     }//GEN-LAST:event_openTaskMenuItemActionPerformed
 
+    private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
+        View.dispose();
+    }//GEN-LAST:event_exitMenuItemActionPerformed
+
+    private void unbanCollaboratorMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unbanCollaboratorMenuItemActionPerformed
+        unbanSelectedCollaborator();
+    }//GEN-LAST:event_unbanCollaboratorMenuItemActionPerformed
+
+    private void banCollaboratorPopupMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_banCollaboratorPopupMenuItemActionPerformed
+        banSelectedCollaborator();
+    }//GEN-LAST:event_banCollaboratorPopupMenuItemActionPerformed
+
+    private void unbanCollaboratorPopupMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unbanCollaboratorPopupMenuItemActionPerformed
+        unbanSelectedCollaborator();
+    }//GEN-LAST:event_unbanCollaboratorPopupMenuItemActionPerformed
+
+    private void resetFiltersMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetFiltersMenuItemActionPerformed
+        resetFilters();
+    }//GEN-LAST:event_resetFiltersMenuItemActionPerformed
+
+    private void resetFiltersPopupMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetFiltersPopupMenuItemActionPerformed
+        resetFilters();
+    }//GEN-LAST:event_resetFiltersPopupMenuItemActionPerformed
+
+    private void taskFilterComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_taskFilterComboBoxItemStateChanged
+        filtersChanged(evt);
+    }//GEN-LAST:event_taskFilterComboBoxItemStateChanged
+
+    private void collaboratorFilterComboBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_collaboratorFilterComboBoxItemStateChanged
+        filtersChanged(evt);
+    }//GEN-LAST:event_collaboratorFilterComboBoxItemStateChanged
+
+    private void openTaskPopupMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openTaskPopupMenuItemActionPerformed
+        openSelectedTask();
+    }//GEN-LAST:event_openTaskPopupMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JList<String> activeCollaboratorsList;
+    private javax.swing.JList activeCollaboratorsList;
     private javax.swing.JPopupMenu activeCollaboratorsPopupMenu;
     private javax.swing.JScrollPane activeCollaboratorsScrollPane;
     private javax.swing.JMenuItem banCollaboratorMenuItem;
     private javax.swing.JMenuItem banCollaboratorPopupMenuItem;
-    private javax.swing.JList<String> bannedCollaboratorsList;
+    private javax.swing.JList bannedCollaboratorsList;
     private javax.swing.JPopupMenu bannedCollaboratorsPopupMenu;
     private javax.swing.JScrollPane bannedCollaboratorsScrollPane;
     private javax.swing.JComboBox collaboratorFilterComboBox;
@@ -378,12 +547,12 @@ public class ProjectFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
-    private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenu navigationMenu;
     private javax.swing.JMenuItem openTaskMenuItem;
     private javax.swing.JMenuItem openTaskPopupMenuItem;
     private javax.swing.JMenu optionsMenu;
+    private javax.swing.JPopupMenu.Separator optionsSeparator;
     private javax.swing.JMenuItem reportMenuItem;
     private javax.swing.JMenuItem reportPopupMenuItem;
     private javax.swing.JMenuItem resetFiltersMenuItem;

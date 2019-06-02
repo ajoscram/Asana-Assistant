@@ -2,6 +2,7 @@ package view;
 
 import control.ControlException;
 import control.IRouter;
+import control.daos.connection.Connection;
 import java.awt.Component;
 import javax.swing.JOptionPane;
 import parse.ParseException;
@@ -14,6 +15,17 @@ public class View {
         LoginFrame frame = new LoginFrame(router);
         frame.setLocationRelativeTo(null); //centering the screen
         frame.setVisible(true);
+    }
+    
+    public static void dispose(){
+        try {
+            Connection connection = Connection.getInstance();
+            if(connection != null)
+                connection.close();
+            System.exit(0);
+        } catch (ControlException ex) {
+            ex.printStackTrace();
+        }
     }
     
     public static void displayInfo(Component parent, String message){

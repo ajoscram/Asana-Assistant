@@ -71,10 +71,11 @@ public class AlejandroMain {
         List<TaskDTO> tasks = parser.parse("tasks.json");
         for(TaskDTO task : tasks)
             printTask(task, "");*/
+       
         /*UI TEST*/
         try {
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-            View.display(new DummyRouter());
+           UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+           View.display(new DummyRouter());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) { 
             View.displayError(null, "You're not using Windows, so the interface might look a little clunky :(");
         }

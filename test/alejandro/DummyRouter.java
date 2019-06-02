@@ -156,10 +156,26 @@ public class DummyRouter implements IRouter {
     }
 
     @Override
-    public void banUser(long projectId, long userId) throws ControlException {}
+    public void banUser(long projectId, long userId) throws ControlException {
+        for(User user : active){
+            if(user.getId() == userId){
+                active.remove(user);
+                banned.add(user);
+                return;
+            }
+        }
+    }
 
     @Override
-    public void unbanUser(long projectId, long userId) throws ControlException {}
+    public void unbanUser(long projectId, long userId) throws ControlException {
+        for(User user : banned){
+            if(user.getId() == userId){
+                banned.remove(user);
+                active.add(user);
+                return;
+            }
+        }
+    }
 
     @Override
     public void synchronize(long projectId, String filepath, ParseFormat format) throws ControlException, ParseException {}
@@ -192,8 +208,10 @@ public class DummyRouter implements IRouter {
     @Override
     public List<DisplayString> getTaskStrings(long projectId, Filter filter) throws ControlException {
         ArrayList<DisplayString> strings = new ArrayList();
-        for(Task task : tasks)
-            strings.add(new DisplayString(task.getId(), task.getName()));
+        for(Task task : tasks){
+            if(filter.getTaskId() == null || (filter.getTaskId() != null && task.getId() == filter.getTaskId()))
+                strings.add(new DisplayString(task.getId(), task.getName()));
+        }
         return strings;
     }
 
