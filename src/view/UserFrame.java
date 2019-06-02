@@ -20,12 +20,13 @@ public class UserFrame extends javax.swing.JFrame {
     public UserFrame(LoginFrame parent, IRouter router, User user) {
         initComponents();
         this.setLocationRelativeTo(parent);
+        this.setIconImage(parent.getIconImage());
         this.parent = parent;
         this.router = router;
         this.user = user;
         this.managedListModel = new DefaultListModel();
         this.collaborateListModel = new DefaultListModel();
-        this.userLabel.setText(user.getName() + " (" + user.getEmail() + ")");
+        this.setTitle(user.getName() + " - " + user.getEmail());
         this.managedList.setModel(managedListModel);
         this.collaborateList.setModel(collaborateListModel);
         reloadManagedList();
@@ -57,11 +58,11 @@ public class UserFrame extends javax.swing.JFrame {
     private void openProject(){
         try {
             Project project;
-            if(this.tabbedPane.getSelectedComponent() == this.managedPanel && this.managedList.getSelectedValue() != null){
+            if(this.tabbedPane.getSelectedComponent() == this.managedScrollpane && this.managedList.getSelectedValue() != null){
                 project = router.getProject(((DisplayString)managedList.getSelectedValue()).getId());
                 new ProjectFrame(this, router, project, user, true).setVisible(true);
                 this.setVisible(false);
-            } else if(this.tabbedPane.getSelectedComponent() == this.collaboratePanel && this.collaborateList.getSelectedValue() != null) {
+            } else if(this.tabbedPane.getSelectedComponent() == this.collaborateScrollpane && this.collaborateList.getSelectedValue() != null) {
                 project = router.getProject(((DisplayString)collaborateList.getSelectedValue()).getId());
                 new ProjectFrame(this, router, project, user, false).setVisible(true);
                 this.setVisible(false);
@@ -86,20 +87,16 @@ public class UserFrame extends javax.swing.JFrame {
         tabbedPaneSeparator = new javax.swing.JPopupMenu.Separator();
         tabbedPaneAddProjectMenuItem = new javax.swing.JMenuItem();
         tabbedPane = new javax.swing.JTabbedPane();
-        managedPanel = new javax.swing.JPanel();
         managedScrollpane = new javax.swing.JScrollPane();
         managedList = new javax.swing.JList();
-        collaboratePanel = new javax.swing.JPanel();
         collaborateScrollpane = new javax.swing.JScrollPane();
         collaborateList = new javax.swing.JList();
-        jLabel1 = new javax.swing.JLabel();
-        userLabel = new javax.swing.JLabel();
         menuBar = new javax.swing.JMenuBar();
-        fileMenu = new javax.swing.JMenu();
+        navigationMenu = new javax.swing.JMenu();
         logoutMenuItem = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         exitMenuItem = new javax.swing.JMenuItem();
-        editMenu = new javax.swing.JMenu();
+        optionsMenu = new javax.swing.JMenu();
         openProjectMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         addProjectMenuItem = new javax.swing.JMenuItem();
@@ -124,9 +121,8 @@ public class UserFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Asana Assistant");
 
+        tabbedPane.setBorder(javax.swing.BorderFactory.createTitledBorder("Projects"));
         tabbedPane.setComponentPopupMenu(tabbedPanePopupMenu);
-
-        managedPanel.setInheritsPopupMenu(true);
 
         managedScrollpane.setBorder(null);
         managedScrollpane.setInheritsPopupMenu(true);
@@ -135,24 +131,7 @@ public class UserFrame extends javax.swing.JFrame {
         managedList.setInheritsPopupMenu(true);
         managedScrollpane.setViewportView(managedList);
 
-        javax.swing.GroupLayout managedPanelLayout = new javax.swing.GroupLayout(managedPanel);
-        managedPanel.setLayout(managedPanelLayout);
-        managedPanelLayout.setHorizontalGroup(
-            managedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 504, Short.MAX_VALUE)
-            .addGroup(managedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(managedScrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE))
-        );
-        managedPanelLayout.setVerticalGroup(
-            managedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 319, Short.MAX_VALUE)
-            .addGroup(managedPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(managedScrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE))
-        );
-
-        tabbedPane.addTab("Manage", managedPanel);
-
-        collaboratePanel.setInheritsPopupMenu(true);
+        tabbedPane.addTab("Manage", managedScrollpane);
 
         collaborateScrollpane.setBorder(null);
         collaborateScrollpane.setInheritsPopupMenu(true);
@@ -161,29 +140,9 @@ public class UserFrame extends javax.swing.JFrame {
         collaborateList.setInheritsPopupMenu(true);
         collaborateScrollpane.setViewportView(collaborateList);
 
-        javax.swing.GroupLayout collaboratePanelLayout = new javax.swing.GroupLayout(collaboratePanel);
-        collaboratePanel.setLayout(collaboratePanelLayout);
-        collaboratePanelLayout.setHorizontalGroup(
-            collaboratePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 504, Short.MAX_VALUE)
-            .addGroup(collaboratePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(collaborateScrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE))
-        );
-        collaboratePanelLayout.setVerticalGroup(
-            collaboratePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 319, Short.MAX_VALUE)
-            .addGroup(collaboratePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(collaborateScrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE))
-        );
+        tabbedPane.addTab("Collaborate", collaborateScrollpane);
 
-        tabbedPane.addTab("Collaborate", collaboratePanel);
-
-        jLabel1.setText("Logged in as:");
-
-        userLabel.setFont(new java.awt.Font("Dialog", 3, 12)); // NOI18N
-        userLabel.setText("User");
-
-        fileMenu.setText("File");
+        navigationMenu.setText("Navigation");
 
         logoutMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_LEFT, java.awt.event.InputEvent.ALT_MASK));
         logoutMenuItem.setText("Log Out");
@@ -192,16 +151,16 @@ public class UserFrame extends javax.swing.JFrame {
                 logoutMenuItemActionPerformed(evt);
             }
         });
-        fileMenu.add(logoutMenuItem);
-        fileMenu.add(jSeparator2);
+        navigationMenu.add(logoutMenuItem);
+        navigationMenu.add(jSeparator2);
 
         exitMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
         exitMenuItem.setText("Exit Asana Assistant");
-        fileMenu.add(exitMenuItem);
+        navigationMenu.add(exitMenuItem);
 
-        menuBar.add(fileMenu);
+        menuBar.add(navigationMenu);
 
-        editMenu.setText("Edit");
+        optionsMenu.setText("Options");
 
         openProjectMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         openProjectMenuItem.setText("Open Selected Project");
@@ -210,8 +169,8 @@ public class UserFrame extends javax.swing.JFrame {
                 openProjectMenuItemActionPerformed(evt);
             }
         });
-        editMenu.add(openProjectMenuItem);
-        editMenu.add(jSeparator1);
+        optionsMenu.add(openProjectMenuItem);
+        optionsMenu.add(jSeparator1);
 
         addProjectMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
         addProjectMenuItem.setText("Add New Managed Project");
@@ -220,9 +179,9 @@ public class UserFrame extends javax.swing.JFrame {
                 addProjectMenuItemActionPerformed(evt);
             }
         });
-        editMenu.add(addProjectMenuItem);
+        optionsMenu.add(addProjectMenuItem);
 
-        menuBar.add(editMenu);
+        menuBar.add(optionsMenu);
 
         setJMenuBar(menuBar);
 
@@ -230,23 +189,11 @@ public class UserFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabbedPane)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(userLabel)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(userLabel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tabbedPane))
+            .addComponent(tabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, 521, Short.MAX_VALUE)
         );
 
         pack();
@@ -276,26 +223,22 @@ public class UserFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem addProjectMenuItem;
     private javax.swing.JList collaborateList;
-    private javax.swing.JPanel collaboratePanel;
     private javax.swing.JScrollPane collaborateScrollpane;
-    private javax.swing.JMenu editMenu;
     private javax.swing.JMenuItem exitMenuItem;
-    private javax.swing.JMenu fileMenu;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JMenuItem logoutMenuItem;
     private javax.swing.JList managedList;
-    private javax.swing.JPanel managedPanel;
     private javax.swing.JScrollPane managedScrollpane;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenu navigationMenu;
     private javax.swing.JMenuItem openProjectMenuItem;
+    private javax.swing.JMenu optionsMenu;
     private javax.swing.JTabbedPane tabbedPane;
     private javax.swing.JMenuItem tabbedPaneAddProjectMenuItem;
     private javax.swing.JMenuItem tabbedPaneOpenProjectMenuItem;
     private javax.swing.JPopupMenu tabbedPanePopupMenu;
     private javax.swing.JPopupMenu.Separator tabbedPaneSeparator;
-    private javax.swing.JLabel userLabel;
     // End of variables declaration//GEN-END:variables
 
 }

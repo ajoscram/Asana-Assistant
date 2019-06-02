@@ -12,6 +12,7 @@ public class SignupDialog extends javax.swing.JDialog {
         super(parent, true);
         initComponents();
         this.setLocationRelativeTo(parent);
+        this.setIconImage(parent.getIconImage());
         this.router = router;
     }
 
@@ -103,7 +104,7 @@ public class SignupDialog extends javax.swing.JDialog {
             Long asanaID = Long.parseLong(asanaIdTextfield.getText());
             String password = new String(passwordTextfield.getPassword());
             UserDTO user = new UserDTO(name, email, password, asanaID);
-            router.addUser(user);
+            router.registerUser(user);
             View.displayInfo(this, "Singed up correctly.");
             this.dispose();
         } catch(NumberFormatException ex) {

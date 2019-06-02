@@ -22,6 +22,8 @@ import report.ReportException;
 public class DummyRouter implements IRouter {
 
     ArrayList<User> users;
+    ArrayList<User> active;
+    ArrayList<User> banned;
     ArrayList<Project> adminProjects;
     ArrayList<Project> collabProjects;
     ArrayList<Task> tasks;
@@ -30,8 +32,28 @@ public class DummyRouter implements IRouter {
     ArrayList<Evidence> evidences;
     
     public DummyRouter(){
+        
+        User u1 = new User(69, 69, "Alejandro Schmidt", "ajoscram@gmail.com", true);
+        User u2 = new User(1, 1, "Lorem Ipsum", "lorem@gmail.com", true);
+        User u3 = new User(2, 2, "Gabriel Brenes", "jogabra@gmail.com", true);
+        User u4 = new User(3, 3, "Carlos Solorzano", "cSolorzano@gmail.com", true);
+        User u5 = new User(4, 4, "Rodrigo Villegas", "rVillegas@gmail.com", true);
+        
         users = new ArrayList();
-        users.add(new User(69, 69, "Alejandro Schmidt", "ajoscram@gmail.com", true));
+        users.add(u1);
+        users.add(u2);
+        users.add(u3);
+        users.add(u4);
+        users.add(u5);
+        
+        active = new ArrayList();
+        active.add(u1);
+        active.add(u2);
+        active.add(u3);
+        
+        banned = new ArrayList();
+        banned.add(u4);
+        banned.add(u5);
         
         adminProjects = new ArrayList();
         adminProjects.add(new Project(0, "Proyecto 1 Diseño", LocalDate.now()));
@@ -94,14 +116,16 @@ public class DummyRouter implements IRouter {
     @Override
     public List<DisplayString> getActiveUserStrings(long projectId) throws ControlException {
         ArrayList<DisplayString> strings = new ArrayList();
-        strings.add(new DisplayString(users.get(0).getId(), users.get(0).getName()));
+        for(User user : active)
+            strings.add(new DisplayString(user.getId(), user.getName()));
         return strings;
     }
 
     @Override
     public List<DisplayString> getBannedUserStrings(long projectId) throws ControlException {
         ArrayList<DisplayString> strings = new ArrayList();
-        strings.add(new DisplayString(users.get(0).getId(), users.get(0).getName()));
+        for(User user : banned)
+            strings.add(new DisplayString(user.getId(), user.getName()));
         return strings;
     }
 
@@ -148,7 +172,13 @@ public class DummyRouter implements IRouter {
 
     @Override
     public Task getTask(long id) throws ControlException {
-        return tasks.get(0);
+        for(Task task : tasks)
+            if(task.getId() == id)
+                return task;
+        for(Task task : subtasks)
+            if(task.getId() == id)
+                return task;
+        throw new ControlException(ControlException.Type.IN_DEVELOPMENT);
     }
 
     @Override
@@ -170,16 +200,18 @@ public class DummyRouter implements IRouter {
     @Override
     public List<DisplayString> getSubtaskStrings(long taskId) throws ControlException {
         ArrayList<DisplayString> strings = new ArrayList();
-        for(Task task : subtasks)
-            strings.add(new DisplayString(task.getId(), task.getName()));
+        if(taskId == 0 || taskId == 1 || taskId ==2)
+            for(Task task : subtasks)
+                strings.add(new DisplayString(task.getId(), task.getName()));
         return strings;
     }
 
     @Override
     public List<DisplayString> getSubtaskStrings(long taskId, Filter filter) throws ControlException {
         ArrayList<DisplayString> strings = new ArrayList();
-        for(Task task : subtasks)
-            strings.add(new DisplayString(task.getId(), task.getName()));
+        if(taskId == 0 || taskId == 1 || taskId ==2)
+            for(Task task : subtasks)
+                strings.add(new DisplayString(task.getId(), task.getName()));
         return strings;
     }
 

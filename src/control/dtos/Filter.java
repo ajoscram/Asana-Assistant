@@ -3,6 +3,8 @@ package control.dtos;
 import java.time.LocalDate;
 
 public class Filter {
+    public static final Filter EMPTY = new Filter(null, null, null, null);
+    
     private Long taskId;
     private Long asigneeId;
     private LocalDate start;

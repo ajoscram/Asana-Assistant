@@ -2,6 +2,7 @@ package view;
 
 import control.ControlException;
 import control.IRouter;
+import javax.swing.ImageIcon;
 import model.User;
 
 public class LoginFrame extends javax.swing.JFrame {
@@ -11,6 +12,8 @@ public class LoginFrame extends javax.swing.JFrame {
     public LoginFrame(IRouter router) {
         initComponents();
         this.router = router;
+        ImageIcon icon = new ImageIcon("logo.png");
+        this.setIconImage(icon.getImage());
     }
 
     @SuppressWarnings("unchecked")
