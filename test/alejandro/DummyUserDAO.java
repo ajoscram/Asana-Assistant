@@ -2,6 +2,7 @@ package alejandro;
 
 import control.daos.UserDAO;
 import model.User;
+import control.ControlException;
 
 public class DummyUserDAO extends UserDAO {
     private User u1 = new User(69, 69, "Alejandro Schmidt", "ajsocram@gmail.com", true);
@@ -9,7 +10,7 @@ public class DummyUserDAO extends UserDAO {
     private User u3 = new User(78, 78, "Gabriel Brenes", "jogabra@gmail.com", true);
 
     @Override
-    public User getUser(long id) {
+    public User getUser(long id) throws ControlException {
         if(u1.getId() == id)
             return u1;
         else if(u2.getId() == id)
@@ -21,7 +22,7 @@ public class DummyUserDAO extends UserDAO {
     }
 
     @Override
-    public User getAsignee(long taskId) {
+    public User getAsignee(long taskId) throws ControlException{
         if(taskId == 0)
             return u1;
         else if(taskId == 1)

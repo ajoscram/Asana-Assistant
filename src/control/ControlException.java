@@ -15,7 +15,9 @@ public class ControlException extends Exception {
         STORE_PROCEDURE_NOT_FOUND,/*2812*/
         INCOMPATIBLE_TYPE, /*8114*/
         NON_EXISTENT_VALUE, /*70002*/
-        INHERIT_VALUE_ERROR /*70004*/
+        INHERIT_VALUE_ERROR, /*70004*/
+        INVALID_EMAIL_FORMAT,
+        FUNTIONALITY_NON_IMPLEMENTED,
     }
     
     private Type type;

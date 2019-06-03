@@ -15,6 +15,7 @@ import model.Task;
 import model.User;
 import report.IReportBuilder;
 import report.Report;
+import report.ReportException;
 import report.Section;
 import report.sections.ListSection;
 import report.sections.TextSection;
@@ -45,7 +46,7 @@ public class ProjectReportBuilder implements IReportBuilder{
         this.evidenceDAO = new EvidenceDAO();
     }
     
-    public ProjectReportBuilder setAsignee(Long asigneeId) {
+    public ProjectReportBuilder setAsignee(Long asigneeId) throws ControlException{
         if(asigneeId != null)
             this.asignee = userDAO.getUser(asigneeId);
         return this;
@@ -105,7 +106,7 @@ public class ProjectReportBuilder implements IReportBuilder{
         return developmentSection;
     }
     
-    private List<Section> getTaskSections(Task task, Task parent){
+    private List<Section> getTaskSections(Task task, Task parent) throws ControlException{
         ArrayList<Section> sections = new ArrayList();
         User taskAsignee = userDAO.getAsignee(task.getId());
         if(validateAsignee(taskAsignee) && validateTask(task)){
@@ -128,13 +129,14 @@ public class ProjectReportBuilder implements IReportBuilder{
         return sections;
     }
     
-    private List<Section> getTaskSections(Task task){
+    private List<Section> getTaskSections(Task task) throws ControlException{
         return getTaskSections(task, null);
     }
     
     @Override
-    public Report build(Object object) {
-        Project project = (Project)object;
+    public Report build(Object object) throws ReportException{
+        try{
+            Project project = (Project)object;
         Report report = new Report();
         report.addSections(getHeaderSections(project));
         ListSection taskSections = new ListSection("tasks");
@@ -142,6 +144,9 @@ public class ProjectReportBuilder implements IReportBuilder{
             taskSections.addSections(getTaskSections(task_));
         report.addSection(taskSections);
         return report;
+        }catch(ControlException ce){
+            throw new ReportException(ReportException.Type.FILE_IO_ERROR);
+        }
     }
 
 }
