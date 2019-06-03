@@ -13,8 +13,49 @@ public class UserDAO {
     
     public UserDAO(){}
     
-    public User login(String email, String password){
-        throw new UnsupportedOperationException("Not supported yet.");
+    public User login(String email, String password) throws ControlException{
+        try{
+            if(email.isEmpty()){
+                email = null;
+            }
+            if(password.isEmpty()){
+                password = null;
+            }
+            ResultSet rs = Connection.getInstance().query("EXEC USP_LOGIN '"+email+"','"+password+"'");
+            if(rs.next()==true){
+                Long IDcollaborator=rs.getLong("IDcollaborator");
+                String username = rs.getString("name");
+                String useremail = rs.getString("email");
+                Long userasanaid=rs.getLong("asanaid");
+                int registeredtemp = rs.getInt("registered");
+                Boolean userregistered;
+                if(registeredtemp == 0){
+                    userregistered = false;
+                }else{
+                    userregistered = true;
+                }
+                return new User(IDcollaborator,userasanaid,username,useremail,userregistered);
+            }else{
+                throw new ControlException(ControlException.Type.NON_EXISTENT_VALUE,"Error: User not found");
+            }
+        } catch(SQLException ex){
+            int errorCode = ex.getErrorCode();
+            String errorMessage = ex.getMessage();
+            switch(errorCode){
+                case 70000:
+                    throw new ControlException(ControlException.Type.EMPTY_SPACES,errorMessage);
+                case 70002:
+                    throw new ControlException(ControlException.Type.NON_EXISTENT_VALUE,errorMessage);
+                case 103:
+                    throw new ControlException(ControlException.Type.INVALID_LENGTH,errorMessage);
+                case 8114:
+                    throw new ControlException(ControlException.Type.INCOMPATIBLE_TYPE,errorMessage);
+                case 77777:
+                    throw new ControlException(ControlException.Type.UNKNOWN_ERROR,errorMessage);
+                default:
+                    throw new ControlException(ControlException.Type.UNKNOWN_ERROR,errorMessage);
+            }
+        }
     }
     
     public void registerUser(UserDTO user) throws ControlException{

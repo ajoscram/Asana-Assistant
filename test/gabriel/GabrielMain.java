@@ -14,7 +14,9 @@ public class GabrielMain {
         try{
             Connection.connect();
             UserDAO usuarioDAO = new UserDAO();
-            usuarioDAO.getBannedUsers(1);
+            /*User user = usuarioDAO.login("carlos2hhh@gmail.com", "124562");
+            System.out.print(user.getId()+"  "+user.getName()+"  "+user.getEmail()+"  "+user.getAsanaId()+"  "+user.isRegistered());*/
+            /*usuarioDAO.getBannedUsers(1);*/
             /*usuarioDAO.getActiveUsers(1);*/
             /*Obtener el administrador de un proyecto con el projectid 
             User user = usuarioDAO.getAdministrator(1);
