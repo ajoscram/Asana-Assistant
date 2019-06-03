@@ -8,15 +8,25 @@ CREATE PROCEDURE usp_adduser
 AS
 BEGIN
 	SET NOCOUNT ON;
+	DECLARE @localasanaid BIGINT SET @localasanaid= (SELECT asanaid FROM COLLABORATOR WHERE asanaid=@asanaid)
+	DECLARE @localemail VARCHAR(50) SET @localemail= (SELECT email FROM COLLABORATOR WHERE email=@email)
 
-	IF @email IS NULL AND @asanaid IS NULL
-		THROW 70000, 'Error: Empty spaces, email and asanaid were not especified' , 1; /*RAISERROR (N'Error:Empty Spaces',18,1)*/
-	ELSE IF @email IS NULL OR @asanaid IS NULL
-	BEGIN
-		INSERT INTO COLLABORATOR (name,asanaid,email,passwordx,registered) VALUES (@name,@asanaid,@email,NULL,0);
-	END
-	ELSE IF @email IS NOT NULL AND @asanaid IS NOT NULL AND @name IS NOT NULL
-		INSERT INTO COLLABORATOR (name,asanaid,email,passwordx,registered) VALUES (@name,@asanaid,@email,NULL,0);
+	IF @email LIKE 'null' AND @asanaid LIKE 0
+		THROW 70000, 'Error: Empty spaces, email and asanaid were not especified' , 1;
+	ELSE IF @email NOT LIKE 'null' AND @asanaid NOT LIKE 0
+		THROW 70006,'Error: Functionality not implemented',1;
+	ELSE IF @localemail NOT LIKE 'null' OR @localasanaid NOT LIKE 0
+		THROW 70001,'Error: User alredy registered', 1;
+	ELSE IF @email LIKE 'null' OR @asanaid LIKE 0
+		BEGIN
+			IF @email NOT LIKE 'null' AND @email NOT LIKE '%_@__%.__%'
+				THROW 70005, 'Error: Invalid email format',1;
+			ELSE
+				IF @email LIKE 'null' AND @asanaid NOT LIKE 0
+					INSERT INTO COLLABORATOR (name,asanaid,email,passwordx,registered) VALUES (@name,@asanaid,NULL,NULL,0);
+				ELSE IF @email NOT LIKE 'null' AND @asanaid LIKE 0
+					INSERT INTO COLLABORATOR (name,asanaid,email,passwordx,registered) VALUES (@name,NULL,@email,NULL,0);
+		END
 	ELSE
 		THROW 77777,'Error: Unknown or unregistered error', 1;
 END

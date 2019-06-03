@@ -14,15 +14,22 @@ public class GabrielMain {
         try{
             Connection.connect();
             UserDAO usuarioDAO = new UserDAO();
-            User user = usuarioDAO.getUser(4L);
-            System.out.print(user.getId()+"  "+user.getName()+"  "+user.getEmail()+"  "+user.getAsanaId()+"  "+user.isRegistered());
+            usuarioDAO.getBannedUsers(1);
+            /*usuarioDAO.getActiveUsers(1);*/
+            /*Obtener el administrador de un proyecto con el projectid 
+            User user = usuarioDAO.getAdministrator(1);
+            System.out.print(user.getId()+"  "+user.getName()+"  "+user.getEmail()+"  "+user.getAsanaId()+"  "+user.isRegistered());*/
+            /*Obtener usuario asignado a una tarea con el IDtask
+            User user = usuarioDAO.getAsignee(145789623325L);
+            System.out.print(user.getId()+"  "+user.getName()+"  "+user.getEmail()+"  "+user.getAsanaId()+"  "+user.isRegistered());*/
+            /*Obtener un usuario con el IDcollaborator
+            User user = usuarioDAO.getUser(22);
+            System.out.print(user.getId()+"  "+user.getName()+"  "+user.getEmail()+"  "+user.getAsanaId()+"  "+user.isRegistered());*/
             /*Registrar un usuario
-            Long asanaid=Long.valueOf(780190416);
+            Long asanaid=Long.valueOf(780190416L);
             usuarioDTO = new UserDTO("Carlos","juan@gmail.com","123456789",asanaid);
             usuarioDAO.registerUser(usuarioDTO);*/
-            /*Obtener un usuario dado un id
-            usuarioDAO.getUser(4);*/
-            /*usuarioDAO.getAsignee(4);*/
+            
         }catch(ControlException ce){
             System.out.print(ce);
         }

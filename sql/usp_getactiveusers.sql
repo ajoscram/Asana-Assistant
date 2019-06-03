@@ -8,12 +8,12 @@ BEGIN
 	IF @idproject IS NULL
 		THROW 70000, 'Error: Empty, idproject wasnt especified' , 1;
 	ELSE IF @localidproject IS NULL
-		THROW 70002, 'Error: Nonexistent idproject in project table while executing usp_getactiveusers' , 1;
+		THROW 70002, 'Error: Nonexistent project' , 1;
 	ELSE IF @idproject IS NOT NULL
-		SELECT COLLABORATOR.IDcollaborator,COLLABORATOR.name, COLLABORATOR.email,COLLABORATOR.asanaid,COLLABORATOR.registered
+		SELECT COLLABORATOR.IDcollaborator,COLLABORATOR.name, COLLABORATOR.email,COLLABORATOR.asanaid,COLLABORATOR.registered,RELPROJECTCOLLABORATOR.IDrol
 		FROM COLLABORATOR
 		INNER JOIN RELPROJECTCOLLABORATOR
-		ON COLLABORATOR.IDcollaborator =RELPROJECTCOLLABORATOR.IDcollaborator AND RELPROJECTCOLLABORATOR.IDproject=@idproject
+		ON COLLABORATOR.IDcollaborator =RELPROJECTCOLLABORATOR.IDcollaborator AND RELPROJECTCOLLABORATOR.IDproject=@idproject AND RELPROJECTCOLLABORATOR.banned =0
 		INNER JOIN ROL
 		ON ROL.IDrol= RELPROJECTCOLLABORATOR.IDrol AND ROL.rol='Colaborador'
 	ELSE

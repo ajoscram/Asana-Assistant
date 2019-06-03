@@ -8,7 +8,7 @@ BEGIN
 	IF @idproject IS NULL
 		THROW 70000, 'Error: Empty, idproject wasnt especified' , 1;
 	ELSE IF @localidproject IS NULL
-		THROW 70002, 'Error: Nonexistent idproject in project table while executing usp_getadministrator' , 1;
+		THROW 70002, 'Error: Nonexistent project' , 1;
 	ELSE IF @idproject IS NOT NULL
 		SELECT COLLABORATOR.IDcollaborator,COLLABORATOR.name, COLLABORATOR.email,COLLABORATOR.asanaid,COLLABORATOR.registered
 		FROM COLLABORATOR

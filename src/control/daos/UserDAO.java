@@ -7,6 +7,7 @@ import model.User;
 import control.daos.connection.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class UserDAO {
     
@@ -87,18 +88,18 @@ public class UserDAO {
     
     public User getUser(long id) throws ControlException{
         try{
-            ResultSet rs = Connection.getInstance().query("EXEC USP_GETUSER "+id);
+            ResultSet rs;
+            if(id==0){
+                String ids = null;
+                 rs = Connection.getInstance().query("EXEC USP_GETUSER "+ids);
+            }else{
+                rs = Connection.getInstance().query("EXEC USP_GETUSER "+id);
+            }
             if(rs.next()==true){
-                int IDcollaboratortemp = rs.getInt("IDcollaborator");
-                Long IDcollaborator=Long.valueOf(IDcollaboratortemp);
-                
+                Long IDcollaborator=rs.getLong("IDcollaborator");
                 String name = rs.getString("name");
-                
                 String email = rs.getString("email");
-                
-                int asanaidtemp = rs.getInt("asanaid");
-                Long asanaid=Long.valueOf(asanaidtemp);
-                
+                Long asanaid=rs.getLong("asanaid");
                 int registeredtemp = rs.getInt("registered");
                 Boolean registered;
                 if(registeredtemp == 0){
@@ -131,18 +132,192 @@ public class UserDAO {
     }
     
     public User getAsignee(long taskId) throws ControlException{
-        throw new UnsupportedOperationException("Not supported yet.");
+        try{
+            ResultSet rs;
+            if(taskId==0){
+                String ids = null;
+                rs = Connection.getInstance().query("EXEC USP_GETASIGNEE "+ids);
+            }else{
+                rs = Connection.getInstance().query("EXEC USP_GETASIGNEE "+taskId);
+            }
+            if(rs.next()==true){
+                Long IDcollaborator=rs.getLong("IDcollaborator");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                Long asanaid=rs.getLong("asanaid");
+                int registeredtemp = rs.getInt("registered");
+                Boolean registered;
+                if(registeredtemp == 0){
+                    registered = false;
+                }else{
+                    registered = true;
+                }
+                return new User(IDcollaborator,asanaid,name,email,registered);
+            }else{
+                throw new ControlException(ControlException.Type.NON_EXISTENT_VALUE,"Error: Task not found");
+            }
+        } catch(SQLException ex){
+            int errorCode = ex.getErrorCode();
+            String errorMessage = ex.getMessage();
+            switch(errorCode){
+                case 70000:
+                    throw new ControlException(ControlException.Type.EMPTY_SPACES,errorMessage);
+                case 70002:
+                    throw new ControlException(ControlException.Type.NON_EXISTENT_VALUE,errorMessage);
+                case 103:
+                    throw new ControlException(ControlException.Type.INVALID_LENGTH,errorMessage);
+                case 8114:
+                    throw new ControlException(ControlException.Type.INCOMPATIBLE_TYPE,errorMessage);
+                case 77777:
+                    throw new ControlException(ControlException.Type.UNKNOWN_ERROR,errorMessage);
+                default:
+                    throw new ControlException(ControlException.Type.UNKNOWN_ERROR,errorMessage);
+            }
+        }
     }
     
-    public User getAdministrator(long projectId){
-        throw new UnsupportedOperationException("Not supported yet.");
+    public User getAdministrator(long projectId) throws ControlException{
+        try{
+            ResultSet rs;
+            if(projectId==0){
+                String ids = null;
+                rs = Connection.getInstance().query("EXEC USP_GETADMINISTRATOR "+ids);
+            }else{
+                rs = Connection.getInstance().query("EXEC USP_GETADMINISTRATOR "+projectId);
+            }
+            if(rs.next()==true){
+                Long IDcollaborator=rs.getLong("IDcollaborator");
+                String name = rs.getString("name");
+                String email = rs.getString("email");
+                Long asanaid=rs.getLong("asanaid");
+                int registeredtemp = rs.getInt("registered");
+                Boolean registered;
+                if(registeredtemp == 0){
+                    registered = false;
+                }else{
+                    registered = true;
+                }
+                return new User(IDcollaborator,asanaid,name,email,registered);
+            }else{
+                throw new ControlException(ControlException.Type.NON_EXISTENT_VALUE,"Error: Administrator Not Found");
+            }
+        } catch(SQLException ex){
+            int errorCode = ex.getErrorCode();
+            String errorMessage = ex.getMessage();
+            switch(errorCode){
+                case 70000:
+                    throw new ControlException(ControlException.Type.EMPTY_SPACES,errorMessage);
+                case 70002:
+                    throw new ControlException(ControlException.Type.NON_EXISTENT_VALUE,errorMessage);
+                case 103:
+                    throw new ControlException(ControlException.Type.INVALID_LENGTH,errorMessage);
+                case 8114:
+                    throw new ControlException(ControlException.Type.INCOMPATIBLE_TYPE,errorMessage);
+                case 77777:
+                    throw new ControlException(ControlException.Type.UNKNOWN_ERROR,errorMessage);
+                default:
+                    throw new ControlException(ControlException.Type.UNKNOWN_ERROR,errorMessage);
+            }
+        }
     }
     
-    public List<User> getActiveUsers(long projectId){
-        throw new UnsupportedOperationException("Not supported yet.");
+    public List<User> getActiveUsers(long projectId) throws ControlException{
+        try{
+            ResultSet rs;
+            if(projectId==0){
+                String ids = null;
+                rs = Connection.getInstance().query("EXEC USP_GETACTIVEUSERS "+ids);
+            }else{
+                rs = Connection.getInstance().query("EXEC USP_GETACTIVEUSERS "+projectId);
+            }
+            ArrayList<User> listaUsuarios = new ArrayList<User>();
+            
+            while(rs.next()){
+                    if(rs.getInt("IDrol")==2){
+                        Long IDcollaborator=rs.getLong("IDcollaborator");
+                        String name = rs.getString("name");
+                        String email = rs.getString("email");
+                        Long asanaid=rs.getLong("asanaid");
+                        int registeredtemp = rs.getInt("registered");
+                        Boolean registered;
+                        if(registeredtemp == 0){
+                            registered = false;
+                        }else{
+                            registered = true;
+                        }
+                        User user = new User(IDcollaborator,asanaid,name,email,registered);
+                        listaUsuarios.add(user);
+                    }
+            }
+            //System.out.print(listaUsuarios.get(0).getName());
+            return listaUsuarios;
+        } catch(SQLException ex){
+            int errorCode = ex.getErrorCode();
+            String errorMessage = ex.getMessage();
+            switch(errorCode){
+                case 70000:
+                    throw new ControlException(ControlException.Type.EMPTY_SPACES,errorMessage);
+                case 70002:
+                    throw new ControlException(ControlException.Type.NON_EXISTENT_VALUE,errorMessage);
+                case 103:
+                    throw new ControlException(ControlException.Type.INVALID_LENGTH,errorMessage);
+                case 8114:
+                    throw new ControlException(ControlException.Type.INCOMPATIBLE_TYPE,errorMessage);
+                case 77777:
+                    throw new ControlException(ControlException.Type.UNKNOWN_ERROR,errorMessage);
+                default:
+                    throw new ControlException(ControlException.Type.UNKNOWN_ERROR,errorMessage);
+            }
+        }
     }
     
-    public List<User> getBannedUsers(long projectId){
-        throw new UnsupportedOperationException("Not supported yet.");
+    public List<User> getBannedUsers(long projectId) throws ControlException{
+        try{
+            ResultSet rs;
+            if(projectId==0){
+                String ids = null;
+                rs = Connection.getInstance().query("EXEC USP_GETBANNEDUSERS "+ids);
+            }else{
+                rs = Connection.getInstance().query("EXEC USP_GETBANNEDUSERS "+projectId);
+            }
+            ArrayList<User> listaUsuarios = new ArrayList<User>();
+            
+            while(rs.next()){
+                    if(rs.getInt("IDrol")==2){
+                        Long IDcollaborator=rs.getLong("IDcollaborator");
+                        String name = rs.getString("name");
+                        String email = rs.getString("email");
+                        Long asanaid=rs.getLong("asanaid");
+                        int registeredtemp = rs.getInt("registered");
+                        Boolean registered;
+                        if(registeredtemp == 0){
+                            registered = false;
+                        }else{
+                            registered = true;
+                        }
+                        User user = new User(IDcollaborator,asanaid,name,email,registered);
+                        listaUsuarios.add(user);
+                    }
+            }
+            //System.out.print(listaUsuarios.get(0).getName());
+            return listaUsuarios;
+        } catch(SQLException ex){
+            int errorCode = ex.getErrorCode();
+            String errorMessage = ex.getMessage();
+            switch(errorCode){
+                case 70000:
+                    throw new ControlException(ControlException.Type.EMPTY_SPACES,errorMessage);
+                case 70002:
+                    throw new ControlException(ControlException.Type.NON_EXISTENT_VALUE,errorMessage);
+                case 103:
+                    throw new ControlException(ControlException.Type.INVALID_LENGTH,errorMessage);
+                case 8114:
+                    throw new ControlException(ControlException.Type.INCOMPATIBLE_TYPE,errorMessage);
+                case 77777:
+                    throw new ControlException(ControlException.Type.UNKNOWN_ERROR,errorMessage);
+                default:
+                    throw new ControlException(ControlException.Type.UNKNOWN_ERROR,errorMessage);
+            }
+        }
     }
 }

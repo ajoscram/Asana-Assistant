@@ -8,7 +8,7 @@ BEGIN
 	IF @idcollaborator IS NULL
 		THROW 70000, 'Error: Empty, idcollaborator wasnt especified' , 1;
 	ELSE IF @localidcollaborator IS NULL
-		THROW 70002, 'Error: Nonexistent idcollaborator in collaborator table while executing usp_getuser' , 1;
+		THROW 70002, 'Error: Nonexistent user' , 1;
 	ELSE IF @idcollaborator IS NOT NULL
 		SELECT IDcollaborator,name,email,asanaid,registered FROM COLLABORATOR WHERE IDcollaborator =@idcollaborator
 	ELSE
