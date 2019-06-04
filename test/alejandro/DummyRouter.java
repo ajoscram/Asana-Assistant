@@ -185,10 +185,18 @@ public class DummyRouter implements IRouter {
     }
 
     @Override
-    public void printReport(long projectId, String filepath, PrintFormat format) throws ControlException, ReportException {}
+    public void printReport(long projectId, String filepath, PrintFormat format) throws ControlException, ReportException {
+        System.out.println("Directory: " + filepath);
+        System.out.println("ID: " + projectId);
+        System.out.println("Format: " + format);
+    }
 
     @Override
-    public void printReport(long projectId, String filepath, PrintFormat format, Filter filter) throws ControlException, ReportException {}
+    public void printReport(long projectId, String filepath, PrintFormat format, Filter filter) throws ControlException, ReportException {
+        System.out.println("Directory: " + filepath);
+        System.out.println("ID: " + projectId);
+        System.out.println("Format: " + format);
+    }
 
     @Override
     public Task getTask(long id) throws ControlException {

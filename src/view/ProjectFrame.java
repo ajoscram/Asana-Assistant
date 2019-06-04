@@ -120,23 +120,24 @@ public class ProjectFrame extends javax.swing.JFrame {
         collaboratorFilterComboBox.setSelectedItem(NONE);
     }
     
-    public void refreshFilters(){
+    private void refreshFilters(){
         try{
             List<DisplayString> tasks = router.getTaskStrings(project.getId());
             taskFilterComboBox.removeAllItems();
-            this.collaboratorFilterComboBox.addItem(NONE);
+            taskFilterComboBox.addItem(NONE);
+            taskFilterComboBox.setSelectedIndex(0);
             for(DisplayString task : tasks)
                 taskFilterComboBox.addItem(task);
             
             List<DisplayString> activeCollaborators = router.getActiveUserStrings(project.getId());
             List<DisplayString> bannedCollaborators = router.getBannedUserStrings(project.getId());
             collaboratorFilterComboBox.removeAllItems();
-            this.collaboratorFilterComboBox.addItem(NONE);
-            this.collaboratorFilterComboBox.setSelectedIndex(0);
+            collaboratorFilterComboBox.addItem(NONE);
+            collaboratorFilterComboBox.setSelectedIndex(0);
             for(DisplayString collaborator : activeCollaborators)
-                this.collaboratorFilterComboBox.addItem(collaborator);
+                collaboratorFilterComboBox.addItem(collaborator);
             for(DisplayString collaborator : bannedCollaborators)
-                this.collaboratorFilterComboBox.addItem(collaborator);
+                collaboratorFilterComboBox.addItem(collaborator);
         } catch(ControlException ex){
             View.displayError(this, ex);
         }
@@ -224,9 +225,9 @@ public class ProjectFrame extends javax.swing.JFrame {
     private void synchronizeTasks(){
         if(View.displayConfirm(this, "Synchronizing tasks is permanent.\nDo you wish to continue?")){
             JFileChooser chooser  = new JFileChooser();
+            chooser.setDialogTitle("Select Tasks File");
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
             chooser.addChoosableFileFilter(new FileNameExtensionFilter(JSON_DESCRIPTION, "json"));
-            //chooser.addChoosableFileFilter(new FileNameExtensionFilter("CSV", "csv"));
             chooser.setAcceptAllFileFilterUsed(false);
             if(chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
             {
@@ -234,6 +235,10 @@ public class ProjectFrame extends javax.swing.JFrame {
                     String file = chooser.getSelectedFile().getAbsolutePath();
                     if(chooser.getFileFilter().getDescription().equals(JSON_DESCRIPTION))
                         router.synchronize(project.getId(), file, IRouter.ParseFormat.JSON);
+                    refreshFilters();
+                    //refreshing filters side-effect refreshes the task tree
+                    refreshCollaboratorLists();
+                    View.displayInfo(this, "Tasks synchronized successfullly.");
                 } catch(ControlException ex){
                     View.displayError(this, ex);
                 } catch(ParseException ex){
@@ -244,6 +249,7 @@ public class ProjectFrame extends javax.swing.JFrame {
     }
     
     private void printReport(){
+        new ReportDialog(this, router, project).setVisible(true);
     }
 
     @SuppressWarnings("unchecked")
