@@ -9,6 +9,7 @@ import parse.ParseException;
 import report.ReportException;
 
 public class View {
+    
     private View(){}
     
     public static void display(IRouter router){
@@ -44,42 +45,18 @@ public class View {
                                       JOptionPane.ERROR_MESSAGE);
     }
     
-    private static String getExceptionMessage(ControlException exception){
-        ControlException.Type type = exception.getType();
-        switch(type){
-            default:
-                return type.toString();
-        }
-    }
-    
     public static void displayError(Component parent, ControlException exception){
-        JOptionPane.showMessageDialog(parent, getExceptionMessage(exception), "ERROR",
+        JOptionPane.showMessageDialog(parent, exception.getMessage(), "ERROR",
                                       JOptionPane.ERROR_MESSAGE);
-    }
-    
-    private static String getExceptionMessage(ParseException exception){
-        ParseException.Type type = exception.getType();
-        switch(type){
-            default:
-                return type.toString();
-        }
     }
     
     public static void displayError(Component parent, ParseException exception){
-        JOptionPane.showMessageDialog(parent, getExceptionMessage(exception), "ERROR",
+        JOptionPane.showMessageDialog(parent, exception.getMessage(), "ERROR",
                                       JOptionPane.ERROR_MESSAGE);
     }
     
-    private static String getExceptionMessage(ReportException exception){
-        ReportException.Type type = exception.getType();
-        switch(type){
-            default:
-                return type.toString();
-        }
-    }
-    
     public static void displayError(Component parent, ReportException exception){
-        JOptionPane.showMessageDialog(parent, getExceptionMessage(exception), "ERROR",
+        JOptionPane.showMessageDialog(parent, exception.getMessage(), "ERROR",
                                       JOptionPane.ERROR_MESSAGE);
     }
 }

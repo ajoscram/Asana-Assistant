@@ -7,6 +7,8 @@ import control.dtos.Filter;
 import java.awt.event.ItemEvent;
 import java.util.List;
 import javax.swing.DefaultListModel;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
@@ -14,15 +16,17 @@ import javax.swing.tree.TreeSelectionModel;
 import model.Project;
 import model.Task;
 import model.User;
+import parse.ParseException;
 
 public class ProjectFrame extends javax.swing.JFrame {
     
     private static final String NONE = "";
+    private static final String JSON_DESCRIPTION = "JSON (.json)";
 
-    private UserFrame parent;
-    private IRouter router;
-    private Project project;
-    private User user;
+    private final UserFrame parent;
+    private final IRouter router;
+    private final Project project;
+    private final User user;
     
     private final DefaultListModel activeCollaboratorsListModel;
     private final DefaultListModel bannedCollaboratorsListModel;
@@ -116,7 +120,7 @@ public class ProjectFrame extends javax.swing.JFrame {
         collaboratorFilterComboBox.setSelectedItem(NONE);
     }
     
-    private void refreshFilters(){
+    public void refreshFilters(){
         try{
             List<DisplayString> tasks = router.getTaskStrings(project.getId());
             taskFilterComboBox.removeAllItems();
@@ -216,6 +220,31 @@ public class ProjectFrame extends javax.swing.JFrame {
             }
         }
     }
+    
+    private void synchronizeTasks(){
+        if(View.displayConfirm(this, "Synchronizing tasks is permanent.\nDo you wish to continue?")){
+            JFileChooser chooser  = new JFileChooser();
+            chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            chooser.addChoosableFileFilter(new FileNameExtensionFilter(JSON_DESCRIPTION, "json"));
+            //chooser.addChoosableFileFilter(new FileNameExtensionFilter("CSV", "csv"));
+            chooser.setAcceptAllFileFilterUsed(false);
+            if(chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
+            {
+                try{
+                    String file = chooser.getSelectedFile().getAbsolutePath();
+                    if(chooser.getFileFilter().getDescription().equals(JSON_DESCRIPTION))
+                        router.synchronize(project.getId(), file, IRouter.ParseFormat.JSON);
+                } catch(ControlException ex){
+                    View.displayError(this, ex);
+                } catch(ParseException ex){
+                    View.displayError(this, ex);
+                }
+            }
+        }
+    }
+    
+    private void printReport(){
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -274,9 +303,19 @@ public class ProjectFrame extends javax.swing.JFrame {
         tasksPopupMenu.add(resetFiltersPopupMenuItem);
 
         synchronizePopupMenuItem.setText("Synchronize Tasks");
+        synchronizePopupMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                synchronizePopupMenuItemActionPerformed(evt);
+            }
+        });
         tasksPopupMenu.add(synchronizePopupMenuItem);
 
         reportPopupMenuItem.setText("Print Report");
+        reportPopupMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reportPopupMenuItemActionPerformed(evt);
+            }
+        });
         tasksPopupMenu.add(reportPopupMenuItem);
 
         banCollaboratorPopupMenuItem.setText("Ban Selected Collaborator");
@@ -296,7 +335,6 @@ public class ProjectFrame extends javax.swing.JFrame {
         bannedCollaboratorsPopupMenu.add(unbanCollaboratorPopupMenuItem);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(970, 700));
 
         tasksPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Tasks"));
         tasksPanel.setComponentPopupMenu(tasksPopupMenu);
@@ -432,10 +470,20 @@ public class ProjectFrame extends javax.swing.JFrame {
 
         synchronizeMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         synchronizeMenuItem.setText("Synchronize Tasks");
+        synchronizeMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                synchronizeMenuItemActionPerformed(evt);
+            }
+        });
         optionsMenu.add(synchronizeMenuItem);
 
         reportMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
         reportMenuItem.setText("Print Report");
+        reportMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reportMenuItemActionPerformed(evt);
+            }
+        });
         optionsMenu.add(reportMenuItem);
         optionsMenu.add(optionsSeparator);
 
@@ -532,6 +580,22 @@ public class ProjectFrame extends javax.swing.JFrame {
     private void openTaskPopupMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openTaskPopupMenuItemActionPerformed
         openSelectedTask();
     }//GEN-LAST:event_openTaskPopupMenuItemActionPerformed
+
+    private void synchronizeMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_synchronizeMenuItemActionPerformed
+        synchronizeTasks();
+    }//GEN-LAST:event_synchronizeMenuItemActionPerformed
+
+    private void synchronizePopupMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_synchronizePopupMenuItemActionPerformed
+        synchronizeTasks();
+    }//GEN-LAST:event_synchronizePopupMenuItemActionPerformed
+
+    private void reportMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportMenuItemActionPerformed
+        printReport();
+    }//GEN-LAST:event_reportMenuItemActionPerformed
+
+    private void reportPopupMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportPopupMenuItemActionPerformed
+        printReport();
+    }//GEN-LAST:event_reportPopupMenuItemActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList activeCollaboratorsList;

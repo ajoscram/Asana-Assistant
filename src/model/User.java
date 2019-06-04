@@ -6,9 +6,7 @@ public class User {
     private String name;
     private String email;
     private boolean registered;
-    public User(){
-        
-    }
+
     public User(long id, long asanaId, String name, String email, boolean registered) {
         this.id = id;
         this.asanaId = asanaId;

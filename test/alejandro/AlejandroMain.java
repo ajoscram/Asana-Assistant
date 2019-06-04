@@ -40,7 +40,7 @@ public class AlejandroMain {
         Report report = new Report();
         TextSection title = new TextSection("title", "Lorem Ipsum");
         TextSection paragraph = new TextSection("paragraph", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
-        ListSection list = new ListSection("list");
+        ListSectOion list = new ListSection("list");
         ListSection sublist = new ListSection("sublist");
         for(int i = 0; i <= 5; i++)
             list.addSection(new TextSection("item" + i, "Item #" + i));
@@ -75,10 +75,10 @@ public class AlejandroMain {
         /*UI TEST*/
         try {
            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-           View.display(new DummyRouter());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) { 
             View.displayError(null, "You're not using Windows, so the interface might look a little clunky :(");
         }
+        View.display(new DummyRouter());
     }
     
     private static void printTask(TaskDTO task, String indent){

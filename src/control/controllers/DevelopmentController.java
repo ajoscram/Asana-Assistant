@@ -38,7 +38,7 @@ public class DevelopmentController {
         List<DisplayString> strings = new ArrayList();
         String string;
         for(Development development : developments){
-            string = "[" + development.getDate() + "]" + development.getDescription();
+            string = "[" + development.getDate() + "] " + development.getDescription();
             strings.add(new DisplayString(development.getId(), string));
         }
         return strings;

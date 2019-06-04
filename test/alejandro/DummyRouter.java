@@ -178,7 +178,11 @@ public class DummyRouter implements IRouter {
     }
 
     @Override
-    public void synchronize(long projectId, String filepath, ParseFormat format) throws ControlException, ParseException {}
+    public void synchronize(long projectId, String filepath, ParseFormat format) throws ControlException, ParseException {
+        System.out.println("File: " + filepath);
+        System.out.println("ID: " + projectId);
+        System.out.println("Format: " + format);
+    }
 
     @Override
     public void printReport(long projectId, String filepath, PrintFormat format) throws ControlException, ReportException {}
@@ -234,7 +238,11 @@ public class DummyRouter implements IRouter {
     }
 
     @Override
-    public void addDevelopment(long taskId, DevelopmentDTO dto) throws ControlException {}
+    public void addDevelopment(long taskId, DevelopmentDTO dto) throws ControlException {
+        developments.add(new Development(developments.size(), dto.getDate(), dto.getHours(), dto.getDescription(), LocalDate.now()));
+        for(String evidence : dto.getEvidenceFilepaths())
+            evidences.add(new Evidence(evidences.size(), evidence));
+    }
 
     @Override
     public Development getDevelopment(long id) throws ControlException {
@@ -246,7 +254,7 @@ public class DummyRouter implements IRouter {
         ArrayList<DisplayString> strings = new ArrayList();
         String string;
         for(Development development : developments){
-            string = "[" + development.getDate() + "]" + development.getDescription();
+            string = "[" + development.getDate() + "] " + development.getDescription();
             strings.add(new DisplayString(development.getId(), string));
         }
         return strings;
@@ -257,8 +265,12 @@ public class DummyRouter implements IRouter {
         ArrayList<DisplayString> strings = new ArrayList();
         String string;
         for(Development development : developments){
-            string = "[" + development.getDate() + "]" + development.getDescription();
-            strings.add(new DisplayString(development.getId(), string));
+            if((filter.getStart() == null || development.getDate().isAfter(filter.getStart()) || development.getDate().compareTo(filter.getStart()) == 0) &&
+               (filter.getEnd() == null || development.getDate().isBefore(filter.getEnd()) || development.getDate().compareTo(filter.getEnd()) == 0)){
+                
+                string = "[" + development.getDate() + "] " + development.getDescription();
+                strings.add(new DisplayString(development.getId(), string));
+            }
         }
         return strings;
     }
@@ -277,5 +289,10 @@ public class DummyRouter implements IRouter {
     }
 
     @Override
-    public void downloadEvidence(long evidenceId, String path) throws ControlException {}
+    public void downloadEvidence(long evidenceId, String path) throws ControlException {
+        System.out.println("Path: " + path);
+        for(Evidence evidence : evidences)
+            if(evidence.getId() == evidenceId)
+                System.out.println("Evidence: " + evidence.getFilename());
+    }
 }
