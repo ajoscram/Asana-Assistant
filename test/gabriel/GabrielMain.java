@@ -26,7 +26,19 @@ public class GabrielMain {
     public static void main(String[] args) {
         try{
             Connection.connect();
+            String date1 = "2019-06-04";
+            LocalDate datecreated1 = LocalDate.parse(date1);
+            Long asanaid=44444444444444L;
+            UserDTO userDTO = new UserDTO("Francisco",null,"123456789",asanaid);
+            TaskDTO taskDTO = new TaskDTO(10620190838L,"Tarea desde JAVA",Task.Type.SINGLE,userDTO,1,datecreated1,datecreated1,datecreated1);
+            TaskDTO subtaskDTO = new TaskDTO(11111111111L,"Subtarea desde JAVA",Task.Type.SUBTASK,userDTO,1,datecreated1,datecreated1,datecreated1);
+            TaskDTO subtask2DTO = new TaskDTO(222222222222L,"Subtarea2 desde JAVA",Task.Type.SUBTASK,userDTO,2,datecreated1,datecreated1,datecreated1);
+            taskDTO.addSubtask(subtaskDTO);
+            taskDTO.addSubtask(subtask2DTO);
             TaskDAO taskDAO = new TaskDAO();
+            taskDAO.addTask(1, taskDTO);
+            
+            
             
             
             /*String date1 = "2019-06-04";
@@ -112,7 +124,7 @@ public class GabrielMain {
             usuarioDAO.registerUser(usuarioDTO);*/
             
         }catch(ControlException ce){
-            System.out.print(ce);
+            System.out.print(ce+" "+ce.getType());
         }
     }
 

@@ -92,16 +92,6 @@ public class UserDAO {
             String name = user.getName();
             String email = user.getEmail();
             Long id = user.getAsanaId();
-            if(name.isEmpty()){
-                name = null;
-            }
-            if(email.isEmpty()){
-                email = null;
-            }
-            if(id.toString().equals("")){
-                Long asanaid=Long.valueOf(0);
-                id = asanaid;
-            }
             Connection.getInstance().query("EXEC USP_ADDUSER '"+name+"','"+email+"',"+id);
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();
@@ -110,7 +100,7 @@ public class UserDAO {
                 case 70000:
                     throw new ControlException(ControlException.Type.EMPTY_SPACES,errorMessage);
                 case 70001:
-                    throw new ControlException(ControlException.Type.DUPLICATE_VALUE,errorMessage);
+                    return;
                 case 103:
                     throw new ControlException(ControlException.Type.INVALID_LENGTH,errorMessage);
                 case 8114:

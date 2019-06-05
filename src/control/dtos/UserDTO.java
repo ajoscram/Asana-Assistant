@@ -25,7 +25,7 @@ public class UserDTO {
         return password;
     }
 
-    public long getAsanaId() {
+    public Long getAsanaId() {
         return asanaId;
     }
 }
