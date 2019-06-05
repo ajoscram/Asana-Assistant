@@ -76,13 +76,13 @@ public class AlejandroMain {
         for(TaskDTO task : tasks)
             printTask(task, "");*/
        
-        /*UI TEST
+        /*UI TEST*/
         try {
            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) { 
             View.displayError(null, "You're not using Windows, so the interface might look a little clunky :(");
         }
-        View.display(new DummyRouter());*/
+        View.display(new DummyRouter());
     }
     
     private static void printTask(TaskDTO task, String indent){

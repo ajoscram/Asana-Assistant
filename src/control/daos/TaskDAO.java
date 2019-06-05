@@ -13,19 +13,27 @@ import model.Task;
 
 public class TaskDAO {
     
+    private String getDateString(LocalDate date){
+        if(date != null)
+            return "'" + date + "'";
+        else
+            return null;
+    }
+    
     private void addSubtask(long idProject,long idFatherTask, TaskDTO subtask) throws ControlException{
         try{
             Long idtask = subtask.getId();
             String name = subtask.getName();
+            String created = getDateString(subtask.getCreated());
+            String completed = getDateString(subtask.getCompleted());
+            String dueto = getDateString(subtask.getDue());
             if(subtask.getAsignee()!= null){
                 addUserDTO(subtask.getAsignee());
                 long idcollaborator = getIDcollaborator(subtask.getAsignee());
-                Connection.getInstance().queryinsert("EXEC USP_ADDSUBTASK "+idtask+","+idFatherTask+","+idcollaborator+","+idProject+",'"+name+"','"+subtask.getCreated()+"','"+subtask.getDue()+"','"+subtask.getCompleted()+"',"+subtask.getIndex());
+                Connection.getInstance().queryinsert("EXEC USP_ADDSUBTASK "+idtask+","+idFatherTask+","+idcollaborator+","+idProject+",'"+name+"',"+created+","+dueto+","+completed+","+subtask.getIndex());
             }else{
-                Connection.getInstance().queryinsert("EXEC USP_ADDSUBTASK "+idtask+","+idFatherTask+","+null+","+idProject+",'"+name+"','"+subtask.getCreated()+"','"+subtask.getDue()+"','"+subtask.getCompleted()+"',"+subtask.getIndex());
+                Connection.getInstance().queryinsert("EXEC USP_ADDSUBTASK "+idtask+","+idFatherTask+","+null+","+idProject+",'"+name+"',"+created+","+dueto+","+completed+","+subtask.getIndex());
             }
-            System.out.println(subtask.getSubtasks().size());
-            
             for(TaskDTO subsubtask : subtask.getSubtasks())
                 addSubtask(idProject,subtask.getId(), subsubtask);
             
@@ -75,17 +83,18 @@ public class TaskDAO {
         try{
             Long idtask = dto.getId();
             String name = dto.getName();
+            String created = getDateString(dto.getCreated());
+            String completed = getDateString(dto.getCompleted());
+            String dueto = getDateString(dto.getDue());
+            String typetask = dto.getType().toString();
             if(dto.getAsignee()!=null){
                 addUserDTO(dto.getAsignee());
                 Long idcollaborator = getIDcollaborator(dto.getAsignee());
-                LocalDate created = dto.getCreated();
-                LocalDate completed = dto.getCompleted();
-                LocalDate dueto = dto.getDue();
-                String typetask = dto.getType().toString();
-                Connection.getInstance().queryinsert("EXEC USP_ADDTASK "+idproject+","+idtask+","+idcollaborator+",'"+name+"','"+created+"','"+dueto+"','"+completed+"','"+typetask+"'");
-                
+                System.out.println("EXEC USP_ADDTASK "+idproject+","+idtask+","+idcollaborator+",'"+name+"',"+created+","+dueto+","+completed+",'"+typetask+"'");
+                Connection.getInstance().queryinsert("EXEC USP_ADDTASK "+idproject+","+idtask+","+idcollaborator+",'"+name+"',"+created+","+dueto+","+completed+",'"+typetask+"'");
             }else{
-                Connection.getInstance().queryinsert("EXEC USP_ADDTASK "+idproject+","+idtask+","+null+",'"+name+"','"+dto.getCreated()+"','"+dto.getDue()+"','"+dto.getCompleted()+"','"+dto.getType().toString()+"'");
+                System.out.println("EXEC USP_ADDTASK "+idproject+","+idtask+","+null+",'"+name+"',"+created+","+dueto+",'"+completed+"','"+typetask+"'");
+                Connection.getInstance().queryinsert("EXEC USP_ADDTASK "+idproject+","+idtask+","+null+",'"+name+"',"+created+","+dueto+","+completed+",'"+typetask+"'");
             }
             
             for(TaskDTO subtask : dto.getSubtasks()){
@@ -270,7 +279,6 @@ public class TaskDAO {
                 listaTareas.add(task);
                     
             }
-            //System.out.print(listaTareas.get(0).getName());
             return listaTareas;
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();
@@ -330,7 +338,6 @@ public class TaskDAO {
                 listaTareas.add(task);
                     
             }
-            System.out.print(listaTareas.get(0).getName());
             return listaTareas;
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();
@@ -391,7 +398,6 @@ public class TaskDAO {
                 listaTareas.add(task);
                     
             }
-            System.out.print(listaTareas.get(0).getName());
             return listaTareas;
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();
