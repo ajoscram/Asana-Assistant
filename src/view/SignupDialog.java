@@ -105,7 +105,7 @@ public class SignupDialog extends javax.swing.JDialog {
             String password = new String(passwordTextfield.getPassword());
             UserDTO user = new UserDTO(name, email, password, asanaID);
             router.registerUser(user);
-            View.displayInfo(this, "Singed up correctly.");
+            View.displayInfo(this, "Signed up correctly.");
             this.dispose();
         } catch(NumberFormatException ex) {
             View.displayError(this, "The \"Asana ID\" field must include a valid number.");

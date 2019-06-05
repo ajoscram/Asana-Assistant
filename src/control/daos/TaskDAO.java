@@ -16,8 +16,6 @@ public class TaskDAO {
     private void addSubtask(long idProject,long idFatherTask, TaskDTO subtask) throws ControlException{
         try{
             Long idtask = subtask.getId();
-            System.out.println(subtask.getName());
-            System.out.println(subtask.getSubtasks().size());
             String name = subtask.getName();
             if(subtask.getAsignee()!= null){
                 addUserDTO(subtask.getAsignee());

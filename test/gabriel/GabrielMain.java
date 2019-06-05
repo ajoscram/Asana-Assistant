@@ -1,6 +1,6 @@
 package gabriel;
 
-/*import control.daos.connection.Connection;
+import control.daos.connection.Connection;
 import control.ControlException;
 import control.daos.DevelopmentDAO;
 import control.daos.EvidenceDAO;
@@ -17,13 +17,22 @@ import model.Development;
 import model.Evidence;
 import model.User;
 import model.Project;
-import model.Task;*/
+import model.Task;
 
 
 
 public class GabrielMain {
 
     public static void main(String[] args) {
+        try{
+            Connection.connect();
+            ProjectDAO projectDAO = new ProjectDAO();
+            ProjectDTO projectDTO = new ProjectDTO("PROYECTO EIFFEL LENGUAJES",1117095154678944L);
+            projectDAO.addProject(projectDTO);
+            
+        }catch(ControlException ce){
+            System.out.print(ce+" "+ce.getType());
+        }
         
     
        /* try{

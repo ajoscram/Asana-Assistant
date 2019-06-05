@@ -99,6 +99,8 @@ public class LoginFrame extends javax.swing.JFrame {
             String password = new String(passwordTextfield.getPassword());
             User user = router.login(email, password);
             new UserFrame(this, router, user).setVisible(true);
+            this.emailTextfield.setText("");
+            this.passwordTextfield.setText("");
             this.setVisible(false);
         } catch(ControlException ex){
             View.displayError(this, ex);

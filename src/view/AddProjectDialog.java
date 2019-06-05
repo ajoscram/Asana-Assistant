@@ -72,6 +72,7 @@ public class AddProjectDialog extends javax.swing.JDialog {
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
         try {
             ProjectDTO project = new ProjectDTO(nameTextfield.getText(), user.getId());
+            System.out.println(nameTextfield.getText()+" "+user.getId());
             router.addProject(project);
             parent.reloadManagedList();
             View.displayInfo(this, "Project added!");

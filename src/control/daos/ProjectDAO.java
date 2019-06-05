@@ -21,10 +21,7 @@ public class ProjectDAO {
             if(name.isEmpty()){
                 name = null;
             }
-            if(idadministrador==0){
-                idadministrador = null;
-            }
-            
+            System.out.println(name+" "+idadministrador);
             Connection.getInstance().queryinsert("EXEC USP_ADDPROJECT '"+name+"',"+idadministrador);
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();
