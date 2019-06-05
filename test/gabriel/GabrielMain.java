@@ -5,9 +5,11 @@ import control.ControlException;
 import control.daos.DevelopmentDAO;
 import control.daos.EvidenceDAO;
 import control.daos.ProjectDAO;
+import control.daos.TaskDAO;
 import control.daos.UserDAO;
 import control.dtos.DevelopmentDTO;
 import control.dtos.ProjectDTO;
+import control.dtos.TaskDTO;
 import control.dtos.UserDTO;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,6 +17,7 @@ import model.Development;
 import model.Evidence;
 import model.User;
 import model.Project;
+import model.Task;
 
 
 
@@ -23,8 +26,30 @@ public class GabrielMain {
     public static void main(String[] args) {
         try{
             Connection.connect();
-            EvidenceDAO evidenceDAO = new EvidenceDAO();
+            TaskDAO taskDAO = new TaskDAO();
             
+            
+            /*String date1 = "2019-06-04";
+            LocalDate datecreated1 = LocalDate.parse(date1);
+            Long asanaid=1117095154678944L;
+            UserDTO userDTO = new UserDTO("Fernando","fujh@gmail.com","123456789",asanaid); 
+            TaskDTO taskDTO = new TaskDTO(10620190838L,"Tarea desde JAVA",Task.Type.SINGLE,userDTO,1,datecreated1,datecreated1,datecreated1);
+            TaskDAO taskDAO = new TaskDAO();
+            taskDAO.addTask(1, taskDTO);
+            taskDAO.getSubtasks(98657423L);*/
+            
+            /*TaskDAO taskDAO = new TaskDAO();
+            Task task = taskDAO.getTask(56897845);
+            System.out.print(task.getName()+" "+task.getType());*/
+            
+            /*EvidenceDAO evidenceDAO = new EvidenceDAO();
+            String date1 = "2019-06-04";
+            LocalDate datecreated1 = LocalDate.parse(date1);
+            Long asanaid=Long.valueOf(1117095154678944L);
+            UserDTO userDTO = new UserDTO("Fernando","fujh@gmail.com","123456789",asanaid); 
+            TaskDTO taskDTO = new TaskDTO(10620190838L,"Tarea desde JAVA",Task.Type.SINGLE,userDTO,1,datecreated1,datecreated1,datecreated1);
+            TaskDAO taskDAO = new TaskDAO();
+            taskDAO.addTask(0, taskDTO);*/
             /*evidenceDAO.addEvidence(1, "evidencia 2 development 1");
             Evidence evidence = evidenceDAO.getEvidence(2);
             System.out.print("EVIDENCE"+evidence.getFilename());
