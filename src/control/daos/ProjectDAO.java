@@ -25,7 +25,7 @@ public class ProjectDAO {
                 idadministrador = null;
             }
             
-            Connection.getInstance().query("EXEC USP_ADDPROJECT '"+name+"',"+idadministrador);
+            Connection.getInstance().queryinsert("EXEC USP_ADDPROJECT '"+name+"',"+idadministrador);
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();
             String errorMessage = ex.getMessage();

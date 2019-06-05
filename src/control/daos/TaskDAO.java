@@ -16,17 +16,18 @@ public class TaskDAO {
     private void addSubtask(long idProject,long idFatherTask, TaskDTO subtask) throws ControlException{
         try{
             Long idtask = subtask.getId();
-            System.out.println("Long idtask = subtask.getId();");
+            System.out.println(subtask.getName());
+            System.out.println(subtask.getSubtasks().size());
             String name = subtask.getName();
             if(subtask.getAsignee()!= null){
                 addUserDTO(subtask.getAsignee());
-                System.out.println("addUserDTO(subtask.getAsignee());");
                 long idcollaborator = getIDcollaborator(subtask.getAsignee());
-                System.out.println("long idcollaborator = getIDcollaborator(subtask.getAsignee());");
-                Connection.getInstance().query("EXEC USP_ADDSUBTASK "+idtask+","+idFatherTask+","+idcollaborator+","+idProject+",'"+name+"','"+subtask.getCreated()+"','"+subtask.getDue()+"','"+subtask.getCompleted()+"','"+subtask.getType().toString()+"'");
+                Connection.getInstance().queryinsert("EXEC USP_ADDSUBTASK "+idtask+","+idFatherTask+","+idcollaborator+","+idProject+",'"+name+"','"+subtask.getCreated()+"','"+subtask.getDue()+"','"+subtask.getCompleted()+"',"+subtask.getIndex());
             }else{
-                Connection.getInstance().query("EXEC USP_ADDSUBTASK "+idtask+","+idFatherTask+","+null+","+idProject+",'"+name+"','"+subtask.getCreated()+"','"+subtask.getDue()+"','"+subtask.getCompleted()+"','"+subtask.getType().toString()+"'");
+                Connection.getInstance().queryinsert("EXEC USP_ADDSUBTASK "+idtask+","+idFatherTask+","+null+","+idProject+",'"+name+"','"+subtask.getCreated()+"','"+subtask.getDue()+"','"+subtask.getCompleted()+"',"+subtask.getIndex());
             }
+            System.out.println(subtask.getSubtasks().size());
+            
             for(TaskDTO subsubtask : subtask.getSubtasks())
                 addSubtask(idProject,subtask.getId(), subsubtask);
             
@@ -37,7 +38,7 @@ public class TaskDAO {
                 case 70000:
                     throw new ControlException(ControlException.Type.EMPTY_SPACES,errorMessage);
                 case 70001:
-                    throw new ControlException(ControlException.Type.DUPLICATE_VALUE,errorMessage);
+                    return;
                 case 103:
                     throw new ControlException(ControlException.Type.INVALID_LENGTH,errorMessage);
                 case 8114:
@@ -83,16 +84,14 @@ public class TaskDAO {
                 LocalDate completed = dto.getCompleted();
                 LocalDate dueto = dto.getDue();
                 String typetask = dto.getType().toString();
-                System.out.println("EXEC USP_ADDTASK "+idproject+","+idtask+","+idcollaborator+",'"+name+"','"+created+"','"+dueto+"','"+completed+"','"+typetask+"'");
-                ResultSet result = Connection.getInstance().query("EXEC USP_ADDTASK "+idproject+","+idtask+","+idcollaborator+",'"+name+"','"+created+"','"+dueto+"','"+completed+"','"+typetask+"'");
+                Connection.getInstance().queryinsert("EXEC USP_ADDTASK "+idproject+","+idtask+","+idcollaborator+",'"+name+"','"+created+"','"+dueto+"','"+completed+"','"+typetask+"'");
                 
             }else{
-                //ResultSet result = Connection.getInstance().query("EXEC USP_ADDTASK "+idproject+","+idtask+","+null+",'"+name+"','"+dto.getCreated()+"','"+dto.getDue()+"','"+dto.getCompleted()+"','"+dto.getType().toString()+"'");
+                Connection.getInstance().queryinsert("EXEC USP_ADDTASK "+idproject+","+idtask+","+null+",'"+name+"','"+dto.getCreated()+"','"+dto.getDue()+"','"+dto.getCompleted()+"','"+dto.getType().toString()+"'");
             }
             
             for(TaskDTO subtask : dto.getSubtasks()){
                 addSubtask(idproject,dto.getId(), subtask);
-                System.out.println("addSubtask(idproject,dto.getId(), subtask);");
             }
             
         } catch(SQLException ex){
@@ -115,9 +114,7 @@ public class TaskDAO {
                 case 70003:
                     throw new ControlException(ControlException.Type.DUPLICATE_VALUE,errorMessage);
                 default:
-                    System.out.println("ERRORCODE: "+ex.getErrorCode());
-                    System.out.println("STATE: "+ex.getSQLState());
-                    System.out.println("STACKTRACE: "+ex.getLocalizedMessage());
+                    throw new ControlException(ControlException.Type.UNKNOWN_ERROR,errorMessage);
             }
         }
     }

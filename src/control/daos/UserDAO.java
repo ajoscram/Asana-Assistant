@@ -64,7 +64,7 @@ public class UserDAO {
             String password = user.getPassword();
             String email = user.getEmail();
             Long id = user.getAsanaId();
-            Connection.getInstance().query("EXEC USP_REGISTERUSER '"+name+"','"+email+"',"+id+",'"+password+"'");
+            Connection.getInstance().queryinsert("EXEC USP_REGISTERUSER '"+name+"','"+email+"',"+id+",'"+password+"'");
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();
             String errorMessage = ex.getMessage();
@@ -92,7 +92,7 @@ public class UserDAO {
             String name = user.getName();
             String email = user.getEmail();
             Long id = user.getAsanaId();
-            Connection.getInstance().query("EXEC USP_ADDUSER '"+name+"','"+email+"',"+id);
+            Connection.getInstance().queryinsert("EXEC USP_ADDUSER '"+name+"','"+email+"',"+id);
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();
             String errorMessage = ex.getMessage();

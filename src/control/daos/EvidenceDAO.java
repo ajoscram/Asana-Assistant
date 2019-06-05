@@ -28,7 +28,7 @@ public class EvidenceDAO {
                 String filename = file.getName();
                 Path newPath = Paths.get(EVIDENCE_FOLDER_PATH + File.separator + filename);
                 Files.copy(file.toPath(), newPath, StandardCopyOption.REPLACE_EXISTING);
-                Connection.getInstance().query("EXEC USP_ADDEVIDENCE "+developmentId+","+"'"+filename+"'");
+                Connection.getInstance().queryinsert("EXEC USP_ADDEVIDENCE "+developmentId+","+"'"+filename+"'");
             } else
                 throw new ControlException(ControlException.Type.IN_DEVELOPMENT, "EvidenceDAO.addEvidence needs IO_ERROR");
         } catch(IOException ex){

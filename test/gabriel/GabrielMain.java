@@ -1,6 +1,6 @@
 package gabriel;
 
-import control.daos.connection.Connection;
+/*import control.daos.connection.Connection;
 import control.ControlException;
 import control.daos.DevelopmentDAO;
 import control.daos.EvidenceDAO;
@@ -17,26 +17,30 @@ import model.Development;
 import model.Evidence;
 import model.User;
 import model.Project;
-import model.Task;
+import model.Task;*/
 
 
 
 public class GabrielMain {
 
     public static void main(String[] args) {
-        try{
+        
+    
+       /* try{
             Connection.connect();
             String date1 = "2019-06-04";
             LocalDate datecreated1 = LocalDate.parse(date1);
             Long asanaid=44444444444444L;
             UserDTO userDTO = new UserDTO("Francisco",null,"123456789",asanaid);
-            TaskDTO taskDTO = new TaskDTO(10620190838L,"Tarea desde JAVA",Task.Type.SINGLE,userDTO,1,datecreated1,datecreated1,datecreated1);
+            TaskDTO taskDTO = new TaskDTO(10620190838L,"Tarea desde JAVA",Task.Type.SECTION,userDTO,1,datecreated1,datecreated1,datecreated1);
             TaskDTO subtaskDTO = new TaskDTO(11111111111L,"Subtarea desde JAVA",Task.Type.SUBTASK,userDTO,1,datecreated1,datecreated1,datecreated1);
             TaskDTO subtask2DTO = new TaskDTO(222222222222L,"Subtarea2 desde JAVA",Task.Type.SUBTASK,userDTO,2,datecreated1,datecreated1,datecreated1);
+            TaskDTO taskDTO1 = new TaskDTO(8559666445L,"Subsubtarea Java",Task.Type.SUBTASK,userDTO,1,datecreated1,datecreated1,datecreated1);
+            subtask2DTO.addSubtask(taskDTO1);
             taskDTO.addSubtask(subtaskDTO);
             taskDTO.addSubtask(subtask2DTO);
             TaskDAO taskDAO = new TaskDAO();
-            taskDAO.addTask(1, taskDTO);
+            taskDAO.addTask(1, taskDTO);*/
             
             
             
@@ -121,11 +125,12 @@ public class GabrielMain {
             Registrar un usuario
             Long asanaid=Long.valueOf(780190416L);
             usuarioDTO = new UserDTO("Carlos","juan@gmail.com","123456789",asanaid);
-            usuarioDAO.registerUser(usuarioDTO);*/
+            usuarioDAO.registerUser(usuarioDTO);
             
         }catch(ControlException ce){
             System.out.print(ce+" "+ce.getType());
         }
-    }
+    }*/
 
+    }
 }

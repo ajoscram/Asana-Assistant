@@ -23,9 +23,9 @@ public class DevelopmentDAO {
             }
             if(idTask==0){
                 String task = null;
-                Connection.getInstance().query("EXEC USP_ADDDEVELOPMENT "+hours+","+description+","+task);
+                Connection.getInstance().queryinsert("EXEC USP_ADDDEVELOPMENT "+hours+","+description+","+task);
             }else{
-                Connection.getInstance().query("EXEC USP_ADDDEVELOPMENT "+hours+","+description+","+idTask);
+                Connection.getInstance().queryinsert("EXEC USP_ADDDEVELOPMENT "+hours+","+description+","+idTask);
             }  
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();

@@ -1,5 +1,6 @@
 package alejandro;
 
+import control.ControlException;
 import control.daos.EvidenceDAO;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ public class DummyEvidenceDAO extends EvidenceDAO{
     private Evidence e5 = new Evidence(5, "plantas_humedas1.jpeg");
     
     @Override
-    public List<Evidence> getEvidences(long developmentId) {
+    public List<Evidence> getEvidences(long developmentId) throws ControlException{
         ArrayList<Evidence> evidences = new ArrayList();
         if(developmentId == 0){
             evidences.add(e0);

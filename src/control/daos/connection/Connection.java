@@ -45,4 +45,8 @@ public class Connection {
         Statement statement = connection.createStatement();
         return statement.executeQuery(query);
     }
+    public void queryinsert(String query) throws SQLException {
+        Statement statement = connection.createStatement();
+        statement.executeUpdate(query);
+    }
 }

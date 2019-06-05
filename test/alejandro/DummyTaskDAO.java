@@ -1,5 +1,6 @@
 package alejandro;
 
+import control.ControlException;
 import control.daos.TaskDAO;
 import java.time.LocalDate;
 import java.time.Month;
@@ -17,7 +18,7 @@ public class DummyTaskDAO extends TaskDAO{
     private Task t6 = new Task(6, "Cerrar Tubo", LocalDate.of(2019, Month.MAY, 28), LocalDate.of(2019, Month.MAY, 30), null, Task.Type.SUBTASK);
 
     @Override
-    public Task getTask(long id) {
+    public Task getTask(long id) throws ControlException {
         if(id == 0)
             return t0;
         else if(id == 1)
@@ -37,7 +38,7 @@ public class DummyTaskDAO extends TaskDAO{
     }
     
     @Override
-    public List<Task> getSubtasks(long id) {
+    public List<Task> getSubtasks(long id) throws ControlException{
         ArrayList<Task> tasks = new ArrayList();
         if(id == 0)
             return tasks;
@@ -63,7 +64,7 @@ public class DummyTaskDAO extends TaskDAO{
     }
 
     @Override
-    public List<Task> getTasks(long projectId) {
+    public List<Task> getTasks(long projectId) throws ControlException {
         if(projectId == 0){
             ArrayList<Task> tasks = new ArrayList();
             tasks.add(t0);
