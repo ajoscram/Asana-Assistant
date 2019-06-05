@@ -141,7 +141,7 @@ public class Router implements IRouter {
     //Developments
     @Override
     public void addDevelopment(long taskId, DevelopmentDTO dto) throws ControlException{
-        developmentController.addDevelopment(dto);
+        developmentController.addDevelopment(taskId,dto);
     }
 
     @Override

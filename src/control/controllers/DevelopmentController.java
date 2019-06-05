@@ -17,8 +17,8 @@ public class DevelopmentController {
         dao = new DevelopmentDAO();
     }
     
-    public void addDevelopment(DevelopmentDTO dto) throws ControlException {
-        dao.addDevelopment(dto);
+    public void addDevelopment(long taskId,DevelopmentDTO dto) throws ControlException {
+        dao.addDevelopment(taskId,dto);
     }
     
     public Development getDevelopment(long id) throws ControlException {

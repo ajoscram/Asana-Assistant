@@ -35,16 +35,14 @@ public class ProjectDAO {
                     throw new ControlException(ControlException.Type.EMPTY_SPACES,errorMessage);
                 case 70001:
                     throw new ControlException(ControlException.Type.DUPLICATE_VALUE,errorMessage);
+                case 70002:
+                    throw new ControlException(ControlException.Type.NON_EXISTENT_VALUE,errorMessage);
                 case 103:
                     throw new ControlException(ControlException.Type.INVALID_LENGTH,errorMessage);
                 case 8114:
                     throw new ControlException(ControlException.Type.INCOMPATIBLE_TYPE,errorMessage);
                 case 77777:
                     throw new ControlException(ControlException.Type.UNKNOWN_ERROR,errorMessage);
-                case 70005:
-                    throw new ControlException(ControlException.Type.INVALID_EMAIL_FORMAT,errorMessage);
-                case 70006:
-                    throw new ControlException(ControlException.Type.FUNTIONALITY_NON_IMPLEMENTED,errorMessage);
                 default:
                     throw new ControlException(ControlException.Type.UNKNOWN_ERROR,errorMessage);
             }
@@ -130,7 +128,6 @@ public class ProjectDAO {
             }
         }
     }
-    
     public List<Project> getCollabProjects(long userId) throws ControlException{
         try{
             ResultSet rs;
@@ -206,10 +203,8 @@ public class ProjectDAO {
                     throw new ControlException(ControlException.Type.INCOMPATIBLE_TYPE,errorMessage);
                 case 77777:
                     throw new ControlException(ControlException.Type.UNKNOWN_ERROR,errorMessage);
-                case 70005:
-                    throw new ControlException(ControlException.Type.INVALID_EMAIL_FORMAT,errorMessage);
-                case 70006:
-                    throw new ControlException(ControlException.Type.FUNTIONALITY_NON_IMPLEMENTED,errorMessage);
+                case 70002:
+                    throw new ControlException(ControlException.Type.NON_EXISTENT_VALUE,errorMessage);
                 default:
                     throw new ControlException(ControlException.Type.UNKNOWN_ERROR,errorMessage);
             }
@@ -249,10 +244,8 @@ public class ProjectDAO {
                     throw new ControlException(ControlException.Type.INCOMPATIBLE_TYPE,errorMessage);
                 case 77777:
                     throw new ControlException(ControlException.Type.UNKNOWN_ERROR,errorMessage);
-                case 70005:
-                    throw new ControlException(ControlException.Type.INVALID_EMAIL_FORMAT,errorMessage);
-                case 70006:
-                    throw new ControlException(ControlException.Type.FUNTIONALITY_NON_IMPLEMENTED,errorMessage);
+                case 70002:
+                    throw new ControlException(ControlException.Type.NON_EXISTENT_VALUE,errorMessage);
                 default:
                     throw new ControlException(ControlException.Type.UNKNOWN_ERROR,errorMessage);
             }
