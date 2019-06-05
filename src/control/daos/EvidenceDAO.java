@@ -2,6 +2,12 @@ package control.daos;
 
 import control.ControlException;
 import control.daos.connection.Connection;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -10,20 +16,23 @@ import model.Evidence;
 
 public class EvidenceDAO {
     
+    private static final String EVIDENCE_FOLDER_PATH = "evidence";
+    
     public EvidenceDAO(){}
     
     public void addEvidence(long developmentId, String filepath) throws ControlException{
         try{
-            ResultSet rs;
-            if(filepath.isEmpty()){
-                filepath = null;
-            }
-            if(developmentId==0){
-                String dId= null;
-                rs = Connection.getInstance().query("EXEC USP_ADDEVIDENCE "+dId+","+filepath);
-            }else{
-                rs = Connection.getInstance().query("EXEC USP_ADDEVIDENCE "+developmentId+","+"'"+filepath+"'");
-            }
+            File file = new File(filepath);
+            if(file.isFile()){
+                new File(EVIDENCE_FOLDER_PATH).mkdir();
+                String filename = file.getName();
+                Path newPath = Paths.get(EVIDENCE_FOLDER_PATH + File.separator + filename);
+                Files.copy(file.toPath(), newPath, StandardCopyOption.REPLACE_EXISTING);
+                Connection.getInstance().query("EXEC USP_ADDEVIDENCE "+developmentId+","+"'"+filename+"'");
+            } else
+                throw new ControlException(ControlException.Type.IN_DEVELOPMENT, "EvidenceDAO.addEvidence needs IO_ERROR");
+        } catch(IOException ex){
+            throw new ControlException(ControlException.Type.IN_DEVELOPMENT, "EvidenceDAO.addEvidence needs IO_ERROR");
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();
             String errorMessage = ex.getMessage();
@@ -119,8 +128,23 @@ public class EvidenceDAO {
             }
         }
     }
-    /*Que hace este downloadevidence*/
-    public void downloadEvidence(long id, String path){
-        throw new UnsupportedOperationException("Not supported yet.");
+    
+    public void downloadEvidence(long id, String path) throws ControlException{
+        try{
+            if(!new File(path).isDirectory())
+                throw new ControlException(ControlException.Type.IN_DEVELOPMENT, "EvidenceDAO.downloadEvidence needs IO_ERROR");
+            else{
+                Evidence evidence = getEvidence(id);
+                File file = new File(EVIDENCE_FOLDER_PATH + File.separator + evidence.getFilename());
+                if(!file.isFile())
+                    throw new ControlException(ControlException.Type.IN_DEVELOPMENT, "EvidenceDAO.downloadEvidence needs IO_ERROR");
+                else{
+                    Path newPath = Paths.get(path + File.separator + evidence.getFilename());
+                    Files.copy(file.toPath(), newPath, StandardCopyOption.REPLACE_EXISTING);
+                }
+            }
+        } catch(IOException ex){
+            throw new ControlException(ControlException.Type.IN_DEVELOPMENT, "EvidenceDAO.downloadEvidence needs IO_ERROR");
+        }
     }
 }

@@ -17,6 +17,10 @@ import org.json.simple.parser.ParseException;
 import control.JSONTaskParser;
 import control.Router;
 import control.daos.connection.Connection;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -72,13 +76,17 @@ public class AlejandroMain {
         for(TaskDTO task : tasks)
             printTask(task, "");*/
        
-        /*UI TEST*/
+        /*UI TEST
         try {
            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) { 
             View.displayError(null, "You're not using Windows, so the interface might look a little clunky :(");
         }
-        View.display(new DummyRouter());
+        View.display(new DummyRouter());*/
+        
+        String pathToFile = "C:\\Users\\Alejandro\\Dropbox\\TEC\\2019 - 1er Semestre\\Diseño de Software\\Proyecto 2\\Asana Assistant\\sql\\usp_getadministrator.sql";
+        
+        
     }
     
     private static void printTask(TaskDTO task, String indent){
