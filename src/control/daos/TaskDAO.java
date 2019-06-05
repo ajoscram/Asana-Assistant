@@ -14,6 +14,14 @@ public class TaskDAO {
     
     public TaskDAO(){}
     
+    private void addSubtask(long idParentTask, TaskDTO subtask){
+        
+        //
+        
+        for(TaskDTO subsubtask : subtask.getSubtasks())
+            addSubtask(subtask.getId(), subsubtask);
+    }
+    
     public void addTask(long idproject, TaskDTO dto) throws ControlException{
         try{
             ResultSet rs;
@@ -36,6 +44,8 @@ public class TaskDAO {
                 rs = Connection.getInstance().query("EXEC USP_ADDTASK "+pid+","+idtask+","+idcollaborator+",'"+name+"','"+dto.getCreated()+"','"+dto.getDue()+"','"+dto.getCompleted()+"','"+dto.getType().toString()+"'");
             }else{
                 rs = Connection.getInstance().query("EXEC USP_ADDTASK "+idproject+","+idtask+","+idcollaborator+",'"+name+"','"+dto.getCreated()+"','"+dto.getDue()+"','"+dto.getCompleted()+"','"+dto.getType().toString()+"'");
+                for(TaskDTO subtask : dto.getSubtasks())
+                    addSubtask(dto.getId(), subtask);
             }
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();

@@ -1,5 +1,6 @@
 package alejandro;
 
+import control.ControlException;
 import control.daos.DevelopmentDAO;
 import java.time.LocalDate;
 import java.time.Month;
@@ -15,7 +16,7 @@ public class DummyDevelopmentDAO extends DevelopmentDAO{
     private Development d3 = new Development(3, LocalDate.of(2019, Month.MAY, 30), 3, "Tubo cerrado.", LocalDate.of(2019, Month.MAY, 30));
     
     @Override
-    public List<Development> getDevelopments(long taskId, LocalDate start, LocalDate end) {
+    public List<Development> getDevelopments(long taskId, LocalDate start, LocalDate end) throws ControlException {
         ArrayList<Development> developments = new ArrayList(); 
         if(taskId == 0)
             return developments;

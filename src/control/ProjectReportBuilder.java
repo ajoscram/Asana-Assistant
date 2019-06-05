@@ -52,7 +52,7 @@ public class ProjectReportBuilder implements IReportBuilder{
         return this;
     }
     
-    public ProjectReportBuilder setTask(Long taskId){
+    public ProjectReportBuilder setTask(Long taskId) throws ControlException {
         if(taskId != null)
             this.task = taskDAO.getTask(taskId);
         return this;
@@ -95,7 +95,7 @@ public class ProjectReportBuilder implements IReportBuilder{
         return sections;
     }
     
-    private ListSection getDevelopmentSection(Development development){
+    private ListSection getDevelopmentSection(Development development) throws ControlException{
         ListSection developmentSection = new ListSection(development.getDate().format(DateTimeFormatter.ISO_DATE));
         developmentSection.addSection(new TextSection("description", development.getDescription()));
         developmentSection.addSection(new TextSection("work", development.getHours() + " hours"));
