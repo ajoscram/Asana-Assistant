@@ -83,10 +83,6 @@ public class AlejandroMain {
             View.displayError(null, "You're not using Windows, so the interface might look a little clunky :(");
         }
         View.display(new DummyRouter());*/
-        
-        String pathToFile = "C:\\Users\\Alejandro\\Dropbox\\TEC\\2019 - 1er Semestre\\Diseño de Software\\Proyecto 2\\Asana Assistant\\sql\\usp_getadministrator.sql";
-        
-        
     }
     
     private static void printTask(TaskDTO task, String indent){

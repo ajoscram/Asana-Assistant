@@ -30,9 +30,9 @@ public class EvidenceDAO {
                 Files.copy(file.toPath(), newPath, StandardCopyOption.REPLACE_EXISTING);
                 Connection.getInstance().query("EXEC USP_ADDEVIDENCE "+developmentId+","+"'"+filename+"'");
             } else
-                throw new ControlException(ControlException.Type.IN_DEVELOPMENT, "EvidenceDAO.addEvidence needs IO_ERROR");
+                throw new ControlException(ControlException.Type.IO_ERROR, "The file given doesn't exist or can't be read from.");
         } catch(IOException ex){
-            throw new ControlException(ControlException.Type.IN_DEVELOPMENT, "EvidenceDAO.addEvidence needs IO_ERROR");
+            throw new ControlException(ControlException.Type.IO_ERROR, "Error while storing the evidence file. The file was not saved.");
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();
             String errorMessage = ex.getMessage();
@@ -132,19 +132,19 @@ public class EvidenceDAO {
     public void downloadEvidence(long id, String path) throws ControlException{
         try{
             if(!new File(path).isDirectory())
-                throw new ControlException(ControlException.Type.IN_DEVELOPMENT, "EvidenceDAO.downloadEvidence needs IO_ERROR");
+                throw new ControlException(ControlException.Type.IO_ERROR, "The directory specified does not exist or can't be read from.");
             else{
                 Evidence evidence = getEvidence(id);
                 File file = new File(EVIDENCE_FOLDER_PATH + File.separator + evidence.getFilename());
                 if(!file.isFile())
-                    throw new ControlException(ControlException.Type.IN_DEVELOPMENT, "EvidenceDAO.downloadEvidence needs IO_ERROR");
+                    throw new ControlException(ControlException.Type.IO_ERROR, "Evidence file is missing. Was it deleted by accident?");
                 else{
                     Path newPath = Paths.get(path + File.separator + evidence.getFilename());
                     Files.copy(file.toPath(), newPath, StandardCopyOption.REPLACE_EXISTING);
                 }
             }
         } catch(IOException ex){
-            throw new ControlException(ControlException.Type.IN_DEVELOPMENT, "EvidenceDAO.downloadEvidence needs IO_ERROR");
+            throw new ControlException(ControlException.Type.IO_ERROR, "Error while downloading the evidence file to the selected directory.");
         }
     }
 }
