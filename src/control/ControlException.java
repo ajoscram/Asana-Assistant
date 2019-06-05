@@ -18,7 +18,8 @@ public class ControlException extends Exception {
         INHERIT_VALUE_ERROR, /*70004*/
         INVALID_EMAIL_FORMAT,
         FUNTIONALITY_NON_IMPLEMENTED,
-        UNREACHABLE_STATEMENT_ERROR
+        UNREACHABLE_STATEMENT_ERROR,
+        IO_ERROR
     }
     
     private Type type;
