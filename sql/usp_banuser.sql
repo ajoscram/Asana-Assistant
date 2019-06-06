@@ -14,12 +14,12 @@ BEGIN
 		ELSE IF @idcollaborator IS NULL
 			THROW 70000, 'Error: Empty, idcollaborator wasnt especified' , 1;
 		ELSE IF @localidproject IS NULL
-			THROW 70002, 'Error: Nonexistent idproject in project table while executing usp_banuser' , 1;
+			THROW 70002, 'Error: Nonexistent project' , 1;
 		ELSE IF @localidcollaborator IS NULL
-			THROW 70002, 'Error: Nonexistent idcollaborator in project table while executing usp_banuser' , 1;
+			THROW 70002, 'Error: Nonexistent collaborator' , 1;
 		ELSE IF @idproject IS NOT NULL AND @idcollaborator IS NOT NULL
 			UPDATE RELPROJECTCOLLABORATOR SET banned = 1
-			WHERE IDproject=@idproject AND IDcollaborator=@idcollaborator
+			WHERE IDproject=@idproject AND IDcollaborator=@idcollaborator AND RELPROJECTCOLLABORATOR.IDrol=2
 		ELSE
 			THROW 77777,'Error: Unknown or unregistered error', 1;
     END

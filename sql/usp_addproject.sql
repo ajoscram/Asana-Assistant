@@ -9,13 +9,13 @@ BEGIN
 
 	DECLARE @localadministrator BIGINT SET @localadministrator = (SELECT IDcollaborator FROM COLLABORATOR WHERE IDcollaborator=@idadministrator)
     BEGIN
-		IF @name IS NULL
+		IF @name LIKE 'null'
 			THROW 70000, 'Error: Empty, name wasnt especified' , 1;
 		ELSE IF @idadministrator IS NULL
 			THROW 70000, 'Error: Empty, idadministrator wasnt especified' , 1;
-		ELSE IF @localadministrator IS NULL
-			THROW 70002, 'Error: Nonexistent idadministrator in collaborator table while executing usp_addproject' , 1;
-		ELSE IF @localadministrator IS NOT NULL
+		/*ELSE IF @localadministrator IS NULL
+			THROW 70002, 'Error: Nonexistent administrator' , 1;*/
+		ELSE IF @idadministrator IS NOT NULL
 			BEGIN
 				INSERT INTO PROJECT (name,datecreated) VALUES (@name,GETDATE())
 				INSERT INTO RELPROJECTCOLLABORATOR (IDproject,IDcollaborator,banned,IDrol) VALUES (@@IDENTITY,@idadministrator,0,1)

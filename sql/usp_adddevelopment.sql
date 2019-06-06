@@ -17,11 +17,13 @@ BEGIN
 		ELSE IF @description IS NULL
 			THROW 70000, 'Error: Empty,	description wasnt especified' , 1;
 		ELSE IF @localidtask IS NULL
-			THROW 70002, 'Error: Nonexistent idtask in task table while executing usp_adddevelopment' , 1;
+			THROW 70002, 'Error: Nonexistent task' , 1;
 		ELSE IF @idtask IS NOT NULL
 			BEGIN
 				INSERT INTO DEVELOPMENT(hoursx,descriptionx,datecreated) VALUES (@hours,@description,GETDATE())
+				SELECT IDdevelopment FROM DEVELOPMENT WHERE IDdevelopment=@@IDENTITY
 				INSERT INTO RELDEVELOPMENTTASK(IDdevelopment,IDtask) VALUES (@@IDENTITY,@idtask)
+				
 			END
 		ELSE
 			THROW 77777,'Error: Unknown or unregistered error', 1;

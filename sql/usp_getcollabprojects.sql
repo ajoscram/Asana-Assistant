@@ -16,7 +16,7 @@ BEGIN
 		ON PROJECT.IDproject = RELPROJECTCOLLABORATOR.IDproject AND RELPROJECTCOLLABORATOR.IDcollaborator = @idcollaborator
 		INNER JOIN ROL
 		ON RELPROJECTCOLLABORATOR.IDrol=ROL.IDrol
-		WHERE ROL.rol = 'Colaborador'
+		WHERE ROL.rol = 'Colaborador' AND RELPROJECTCOLLABORATOR.banned=0
 	ELSE
 		THROW 77777,'Error: Unknown or unregistered error', 1;
 END

@@ -10,7 +10,7 @@ BEGIN
 		IF @iddevelopment IS NULL
 			THROW 70000, 'Error: Empty, iddevelopment wasnt especified' , 1;
 		ELSE IF @localiddevelopment IS NULL
-			THROW 70002, 'Error: Nonexistent iddevelopment in development table while executing usp_getevidences' , 1;
+			THROW 70002, 'Error: Nonexistent development' , 1;
 		ELSE IF @iddevelopment IS NOT NULL
 			SELECT EVIDENCE.IDevidence,filepath FROM EVIDENCE
 			INNER JOIN RELDEVELOPMENTEVIDENCE

@@ -9,7 +9,7 @@ BEGIN
 	IF @idadministrator IS NULL
 		THROW 70000, 'Error: Empty, idadministrator wasnt especified' , 1;
 	ELSE IF @localadministrator IS NULL
-		THROW 70002, 'Error: Nonexistent idadministrator in collaborator table while executing usp_getadminprojects' , 1;
+		THROW 70002, 'Error: Nonexistent administrator' , 1;
 	ELSE IF @idadministrator IS NOT NULL
 		SELECT PROJECT.IDproject,name,datecreated FROM PROJECT
 		INNER JOIN RELPROJECTCOLLABORATOR

@@ -12,14 +12,14 @@ BEGIN
 		IF @idproject IS NULL
 			THROW 70000, 'Error: Empty, idproject wasnt especified' , 1;
 		ELSE IF @localidproject IS NULL
-			THROW 70002, 'Error: Nonexistent idproject in project table while executing usp_gettasks' , 1;
-		ELSE IF @localidcollaborator IS NULL
-			THROW 70002, 'Error: Nonexistent idcollaborator in collaborator table while executing usp_gettasks' , 1;
+			THROW 70002, 'Error: Nonexistent project' , 1;
 		ELSE IF @asigneeid IS NULL AND @idproject IS NOT NULL
 			SELECT IDcollaborator,TASK.IDtask,name,datecreated,dueto,completed,typetask FROM TASK
 			INNER JOIN RELPROJECTTASK
 			ON RELPROJECTTASK.IDtask=TASK.IDtask
 			WHERE RELPROJECTTASK.IDproject=@idproject AND (TASK.typetask='SECTION' OR TASK.typetask='SINGLE')
+		ELSE IF @localidcollaborator IS NULL
+			THROW 70002, 'Error: Nonexistent collaborator' , 1;
 		ELSE IF @asigneeid IS NOT NULL AND @idproject IS NOT NULL
 				SELECT IDcollaborator,TASK.IDtask,name,datecreated,dueto,completed,typetask FROM TASK
 				INNER JOIN RELPROJECTTASK

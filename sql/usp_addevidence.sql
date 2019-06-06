@@ -14,7 +14,7 @@ BEGIN
 		ELSE IF @filepath IS NULL
 			THROW 70000, 'Error: Empty, filepath wasnt especified' , 1;
 		ELSE IF @localiddevelopment IS NULL
-			THROW 70002, 'Error: Nonexistent iddevelopment in development table while executing usp_addevidence' , 1;
+			THROW 70002, 'Error: Nonexistent development' , 1;
 		ELSE IF @iddevelopment IS NOT NULL AND @filepath IS NOT NULL
 			BEGIN
 				INSERT INTO EVIDENCE (filepath,dateadded) VALUES (@filepath,GETDATE())

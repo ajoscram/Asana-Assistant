@@ -1,5 +1,5 @@
 /*Procedimiento que obtiene los developments dado un idtask*/
-CREATE PROCEDURE usp_getdevelopmentsa
+CREATE PROCEDURE usp_getdevelopmentstask
 	@idtask bigint
 AS
 BEGIN
@@ -8,7 +8,7 @@ BEGIN
 	IF @idtask IS NULL
 		THROW 70000, 'Error: Empty,	idtask wasnt especified' , 1;
 	ELSE IF @localidtask IS NULL
-		THROW 70002, 'Error: Nonexistent idtask in task table while executing usp_getdevelopmentsA' , 1;
+		THROW 70002, 'Error: Nonexistent task' , 1;
 	ELSE IF @idtask IS NOT NULL
 		SELECT DEVELOPMENT.IDdevelopment,hoursx,descriptionx,datecreated FROM DEVELOPMENT 
 		INNER JOIN RELDEVELOPMENTTASK 

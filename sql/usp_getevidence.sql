@@ -9,7 +9,7 @@ BEGIN
 	IF @idevidence IS NULL
 		THROW 70000, 'Error: Empty,	idevidence wasnt especified' , 1;
 	ELSE IF @localidevidence IS NULL
-		THROW 70002, 'Error: Nonexistent idevidence in evidence table while executing usp_getevidence' , 1;
+		THROW 70002, 'Error: Nonexistent evidence' , 1;
 	ELSE IF @idevidence IS NOT NULL
 		SELECT IDevidence,filepath FROM EVIDENCE WHERE IDevidence=@idevidence
 	ELSE
