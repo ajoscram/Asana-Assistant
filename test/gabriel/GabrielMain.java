@@ -24,18 +24,26 @@ import model.Task;
 public class GabrielMain {
 
     public static void main(String[] args) {
-        try{
+        /*try{
             Connection.connect();
-            ProjectDAO projectDAO = new ProjectDAO();
-            ProjectDTO projectDTO = new ProjectDTO("PROYECTO EIFFEL LENGUAJES",1117095154678944L);
-            projectDAO.addProject(projectDTO);
+            String date1 = "2019-06-08";
+            LocalDate datecreated1 = LocalDate.parse(date1);
+            String date2 = "2019-06-05";
+            LocalDate datecreated2 = LocalDate.parse(date2);
+            DevelopmentDAO developmentDAO = new DevelopmentDAO();
+            ArrayList<String> paths = new ArrayList<>();
+            paths.add("path1");
+            paths.add("path2");
+            paths.add("path3");
+            DevelopmentDTO developmentDTO = new DevelopmentDTO(datecreated1, 33, "SOLUCIONADO3", paths);
+            developmentDAO.addDevelopment(123456789L, developmentDTO);
             
         }catch(ControlException ce){
             System.out.print(ce+" "+ce.getType());
         }
         
     
-       /* try{
+       try{
             Connection.connect();
             String date1 = "2019-06-04";
             LocalDate datecreated1 = LocalDate.parse(date1);
