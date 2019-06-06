@@ -184,9 +184,8 @@ public class UserDAO {
                     registered = true;
                 }
                 return new User(IDcollaborator,asanaid,name,email,registered);
-            }else{
-                throw new ControlException(ControlException.Type.NON_EXISTENT_VALUE,"Error: Task not found");
-            }
+            }else
+                return null;
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();
             String errorMessage = ex.getMessage();
@@ -229,9 +228,8 @@ public class UserDAO {
                     registered = true;
                 }
                 return new User(IDcollaborator,asanaid,name,email,registered);
-            }else{
-                throw new ControlException(ControlException.Type.NON_EXISTENT_VALUE,"Error: Administrator Not Found");
-            }
+            }else
+                return null;
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();
             String errorMessage = ex.getMessage();

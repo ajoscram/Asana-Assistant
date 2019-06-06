@@ -13,6 +13,13 @@ import model.Development;
 public class DevelopmentDAO {
     public DevelopmentDAO(){}
     
+    private String getDateString(LocalDate date){
+        if(date != null)
+            return "'" + date + "'";
+        else
+            return null;
+    }
+    
     public void addDevelopment(long idTask,DevelopmentDTO dto) throws ControlException{
         try{
             LocalDate date = dto.getDate();
@@ -23,10 +30,11 @@ public class DevelopmentDAO {
             }
             if(idTask==0){
                 String task = null;
-                Connection.getInstance().queryinsert("EXEC USP_ADDDEVELOPMENT "+hours+","+description+","+task);
+                Connection.getInstance().queryinsert("EXEC USP_ADDDEVELOPMENT "+hours+",'"+description+"',"+task);
             }else{
-                Connection.getInstance().queryinsert("EXEC USP_ADDDEVELOPMENT "+hours+","+description+","+idTask);
-            }  
+                Connection.getInstance().queryinsert("EXEC USP_ADDDEVELOPMENT "+hours+",'"+description+"',"+idTask);
+            }
+            
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();
             String errorMessage = ex.getMessage();
@@ -110,7 +118,6 @@ public class DevelopmentDAO {
                 Development development = new Development(IDdevelopment,datecreated,hours,description,datecreated);
                 listaDevelopment.add(development);     
             }
-            //System.out.print(listaDevelopment.get(0).getDescription());
             return listaDevelopment;
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();
@@ -141,7 +148,7 @@ public class DevelopmentDAO {
                 String ids = null;
                 rs = Connection.getInstance().query("EXEC USP_GETDEVELOPMENTSB "+ids+",'"+start+"','"+end+"'");
             }else{
-                rs = Connection.getInstance().query("EXEC USP_GETDEVELOPMENTSB "+taskId+",'"+start+"','"+end+"'");
+                rs = Connection.getInstance().query("EXEC USP_GETDEVELOPMENTSB "+taskId+","+getDateString(start)+","+getDateString(end));
             }
             ArrayList<Development> listaDevelopment= new ArrayList<>();
             
@@ -154,7 +161,6 @@ public class DevelopmentDAO {
                 Development development = new Development(IDdevelopment,datecreated,hours,description,datecreated);
                 listaDevelopment.add(development);     
             }
-            //System.out.print(listaDevelopment.get(0).getDescription());
             return listaDevelopment;
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();

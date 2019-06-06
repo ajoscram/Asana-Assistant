@@ -31,7 +31,10 @@ public class UserController {
     
     public DisplayString getAsigneeString(long id) throws ControlException {
         User user = dao.getAsignee(id);
-        return new DisplayString(user.getId(), user.getName());
+        if(user != null)
+            return new DisplayString(user.getId(), user.getName());
+        else
+            return null;
     }
     
     public DisplayString getAdministratorString(long projectId) throws ControlException {

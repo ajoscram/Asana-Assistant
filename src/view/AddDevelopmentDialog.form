@@ -75,7 +75,7 @@
                                   <Component id="dateChooser" max="32767" attributes="0"/>
                               </Group>
                           </Group>
-                          <Component id="evidenceScrollPane" max="32767" attributes="0"/>
+                          <Component id="evidenceScrollPane" pref="396" max="32767" attributes="0"/>
                           <Component id="descriptionScrollPane" max="32767" attributes="0"/>
                           <Component id="addDevelopmentButton" alignment="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">

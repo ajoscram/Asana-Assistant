@@ -144,7 +144,6 @@ public class ProjectDAO {
                 listaProyectos.add(project);
                     
             }
-            //System.out.print(listaProyectos.get(1).getName());
             return listaProyectos;
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();
@@ -168,22 +167,21 @@ public class ProjectDAO {
     
     public void banUser(long projectId, long userId) throws ControlException{
         try{
-            ResultSet rs;
             if(projectId==0 && userId==0){
                 String pId= null;
                 String uId= null;
-                rs = Connection.getInstance().query("EXEC USP_BANUSER "+pId+","+uId);
+                Connection.getInstance().queryinsert("EXEC USP_BANUSER "+pId+","+uId);
             }
             if(projectId==0 && userId!=0){
                 String pId= null;
-                rs = Connection.getInstance().query("EXEC USP_BANUSER "+pId+","+userId);
+                Connection.getInstance().queryinsert("EXEC USP_BANUSER "+pId+","+userId);
             }
             if(projectId!=0 && userId==0){
                 String uId= null;
-                rs = Connection.getInstance().query("EXEC USP_BANUSER "+projectId+","+uId);
+                Connection.getInstance().queryinsert("EXEC USP_BANUSER "+projectId+","+uId);
             }
             if(projectId!=0 && userId!=0){
-                rs = Connection.getInstance().query("EXEC USP_BANUSER "+projectId+","+userId);
+                Connection.getInstance().queryinsert("EXEC USP_BANUSER "+projectId+","+userId);
             }
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();
@@ -209,22 +207,21 @@ public class ProjectDAO {
     
     public void unbanUser(long projectId, long userId) throws ControlException{
         try{
-            ResultSet rs;
             if(projectId==0 && userId==0){
                 String pId= null;
                 String uId= null;
-                rs = Connection.getInstance().query("EXEC USP_UNBANUSER "+pId+","+uId);
+                Connection.getInstance().queryinsert("EXEC USP_UNBANUSER "+pId+","+uId);
             }
             if(projectId==0 && userId!=0){
                 String pId= null;
-                rs = Connection.getInstance().query("EXEC USP_UNBANUSER "+pId+","+userId);
+                Connection.getInstance().queryinsert("EXEC USP_UNBANUSER "+pId+","+userId);
             }
             if(projectId!=0 && userId==0){
                 String uId= null;
-                rs = Connection.getInstance().query("EXEC USP_UNBANUSER "+projectId+","+uId);
+                Connection.getInstance().queryinsert("EXEC USP_UNBANUSER "+projectId+","+uId);
             }
             if(projectId!=0 && userId!=0){
-                rs = Connection.getInstance().query("EXEC USP_UNBANUSER "+projectId+","+userId);
+                Connection.getInstance().queryinsert("EXEC USP_UNBANUSER "+projectId+","+userId);
             }
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();

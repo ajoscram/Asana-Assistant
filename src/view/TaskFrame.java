@@ -43,7 +43,7 @@ public class TaskFrame extends javax.swing.JFrame {
         
         try {
             LocalDate created = task.getCreated();
-            LocalDate completed = task.getCreated();
+            LocalDate completed = task.getCompleted();
             LocalDate due = task.getDue();
             DisplayString asignee = router.getAsigneeString(task.getId());
             List<DisplayString> subtasks = router.getSubtaskStrings(task.getId());
@@ -56,7 +56,8 @@ public class TaskFrame extends javax.swing.JFrame {
                 this.completedDateLabel.setText(completed.format(DateTimeFormatter.ISO_DATE));
             if(due != null)
                 this.dueDateLabel.setText(due.format(DateTimeFormatter.ISO_DATE));
-            asigneeLabel.setText(asignee.toString());
+            if(asignee != null)
+                asigneeLabel.setText(asignee.toString());
             this.subtasksList.setModel(subtasksListModel);
             for(DisplayString string : subtasks)
                 subtasksListModel.addElement(string);
@@ -73,7 +74,19 @@ public class TaskFrame extends javax.swing.JFrame {
             //filters
             this.startDateChooser.getDateEditor().setEnabled(false);
             this.endDateChooser.getDateEditor().setEnabled(false);
-        } catch(ControlException ex) { }
+            
+            if(asignee == null || asignee.getId() != user.getId()){
+                this.optionsMenu.remove(this.addDevelopmentMenuItem);
+                this.developmentsPopupMenu.remove(this.addDevelopmentPopupMenuItem);
+                
+                //disabling keyboard shortcuts
+                this.addDevelopmentMenuItem.setEnabled(false);
+            }
+            
+        } catch(ControlException ex) {
+            System.out.println(ex.getType());
+            View.displayError(parent, ex);
+        }
     }
     
     private void openAddDevelopment(){

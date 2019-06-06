@@ -86,6 +86,11 @@ public class ProjectFrame extends javax.swing.JFrame {
                 this.optionsMenu.remove(optionsSeparator);
                 this.optionsMenu.remove(banCollaboratorMenuItem);
                 this.optionsMenu.remove(unbanCollaboratorMenuItem);
+                
+                //disabling keyboard shortcuts
+                this.synchronizeMenuItem.setEnabled(false);
+                this.banCollaboratorMenuItem.setEnabled(false);
+                this.unbanCollaboratorMenuItem.setEnabled(false);
             }
         } catch(ControlException ex){
             View.displayError(parent, ex);
@@ -155,7 +160,7 @@ public class ProjectFrame extends javax.swing.JFrame {
             else if(collaborator instanceof DisplayString)
                 filter = new Filter(null, ((DisplayString)collaborator).getId(), null, null);
             else
-                filter = new Filter(null, null, null, null);
+                filter = Filter.EMPTY;
             filterTasks(filter);
         }
     }

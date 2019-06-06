@@ -107,7 +107,6 @@ public class EvidenceDAO {
                 Evidence evidence = new Evidence(IDevidence,filepath);
                 listaEvidencias.add(evidence);
             }
-            System.out.print(listaEvidencias.get(0).getFilename());
             return listaEvidencias;
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();
