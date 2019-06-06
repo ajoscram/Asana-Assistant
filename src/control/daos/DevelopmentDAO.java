@@ -35,7 +35,7 @@ public class DevelopmentDAO {
             if(description.isEmpty()){
                 description = null;
             }
-            rs=Connection.getInstance().query("EXEC USP_ADDDEVELOPMENT "+hours+",'"+description+"',"+idTask);
+            rs=Connection.getInstance().query("EXEC USP_ADDDEVELOPMENT "+hours+",'"+description+"',"+idTask + ", " + getDateString(date));
             if(rs.next()){
                 Long iddevelopment = rs.getLong("IDdevelopment");
                 if(!dto.getEvidenceFilepaths().isEmpty()){
@@ -114,9 +114,9 @@ public class DevelopmentDAO {
             ResultSet rs;
             if(taskId==0){
                 String ids = null;
-                rs = Connection.getInstance().query("EXEC USP_GETDEVELOPMENTSA "+ids);
+                rs = Connection.getInstance().query("EXEC USP_GETDEVELOPMENTSTASK "+ids);
             }else{
-                rs = Connection.getInstance().query("EXEC USP_GETDEVELOPMENTSA "+taskId);
+                rs = Connection.getInstance().query("EXEC USP_GETDEVELOPMENTSTASK "+taskId);
             }
             ArrayList<Development> listaDevelopment= new ArrayList<>();
             
@@ -176,9 +176,6 @@ public class DevelopmentDAO {
                 LocalDate datecreated = LocalDate.parse(date);
                 Development development = new Development(IDdevelopment,datecreated,hours,description,datecreated);
                 listaDevelopment.add(development);     
-            }
-            for(int i=0;i<=listaDevelopment.size()-1;i++){
-                System.out.println(listaDevelopment.get(i).getDescription());
             }
             return listaDevelopment;
         } catch(SQLException ex){

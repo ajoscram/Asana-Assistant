@@ -84,7 +84,6 @@ public class TaskFrame extends javax.swing.JFrame {
             }
             
         } catch(ControlException ex) {
-            System.out.println(ex.getType());
             View.displayError(parent, ex);
         }
     }

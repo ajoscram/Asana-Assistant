@@ -90,10 +90,8 @@ public class TaskDAO {
             if(dto.getAsignee()!=null){
                 addUserDTO(dto.getAsignee());
                 Long idcollaborator = getIDcollaborator(dto.getAsignee());
-                System.out.println("EXEC USP_ADDTASK "+idproject+","+idtask+","+idcollaborator+",'"+name+"',"+created+","+dueto+","+completed+",'"+typetask+"'");
                 Connection.getInstance().queryinsert("EXEC USP_ADDTASK "+idproject+","+idtask+","+idcollaborator+",'"+name+"',"+created+","+dueto+","+completed+",'"+typetask+"'");
             }else{
-                System.out.println("EXEC USP_ADDTASK "+idproject+","+idtask+","+null+",'"+name+"',"+created+","+dueto+",'"+completed+"','"+typetask+"'");
                 Connection.getInstance().queryinsert("EXEC USP_ADDTASK "+idproject+","+idtask+","+null+",'"+name+"',"+created+","+dueto+","+completed+",'"+typetask+"'");
             }
             
@@ -218,7 +216,6 @@ public class TaskDAO {
                 listaTareas.add(task);
                     
             }
-            //System.out.print(listaTareas.get(0).getName());
             return listaTareas;
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();

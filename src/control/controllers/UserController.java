@@ -47,7 +47,9 @@ public class UserController {
         List<DisplayString> strings = new ArrayList();
         String string;
         for(User user : users){
-            string = user.getName() + " (" + user.getEmail() + ")";
+            string = user.getName();
+            if(user.getEmail() != null)
+                string +=" (" + user.getEmail() + ")";
             strings.add(new DisplayString(user.getId(), string));
         }
         return strings;
@@ -58,7 +60,9 @@ public class UserController {
         List<DisplayString> strings = new ArrayList();
         String string;
         for(User user : users){
-            string = user.getName() + " (" + user.getEmail() + ")";
+            string = user.getName();
+            if(user.getEmail() != null)
+                string +=" (" + user.getEmail() + ")";
             strings.add(new DisplayString(user.getId(), string));
         }
         return strings;

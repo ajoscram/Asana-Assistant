@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import parse.IParser;
 import control.JSONTaskParser;
 import control.ProjectReportBuilder;
+import java.time.LocalDate;
 import parse.ParseException;
 import report.IReportPrinter;
 import report.Report;
@@ -95,6 +96,7 @@ public class ProjectController {
     }
     
     public void printReport(long id, String filepath, IRouter.PrintFormat format, Filter filter) throws ControlException, ReportException {
+        filepath += "\\" + LocalDate.now() + " Report." + format;
         ProjectReportBuilder reportBuilder = new ProjectReportBuilder()
                 .setAsignee(filter.getAsigneeId())
                 .setTask(filter.getTaskId())

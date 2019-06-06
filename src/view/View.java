@@ -4,6 +4,7 @@ import control.ControlException;
 import control.IRouter;
 import control.daos.connection.Connection;
 import java.awt.Component;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import parse.ParseException;
 import report.ReportException;
@@ -18,7 +19,7 @@ public class View {
         frame.setVisible(true);
     }
     
-    public static void dispose(){
+    public static int dispose(){
         try {
             Connection connection = Connection.getInstance();
             if(connection != null)
@@ -27,6 +28,7 @@ public class View {
         } catch (ControlException ex) {
             ex.printStackTrace();
         }
+        return JFrame.EXIT_ON_CLOSE;
     }
     
     public static void displayInfo(Component parent, String message){

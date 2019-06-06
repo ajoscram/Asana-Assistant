@@ -21,7 +21,6 @@ public class ProjectDAO {
             if(name.isEmpty()){
                 name = null;
             }
-            System.out.println(name+" "+idadministrador);
             Connection.getInstance().queryinsert("EXEC USP_ADDPROJECT '"+name+"',"+idadministrador);
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();
@@ -103,7 +102,6 @@ public class ProjectDAO {
                 listaProyectos.add(project);
                     
             }
-            //System.out.print(listaProyectos.get(0).getName());
             return listaProyectos;
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();
