@@ -5,13 +5,15 @@ import control.IRouter;
 import javax.swing.ImageIcon;
 import model.User;
 
-public class LoginFrame extends javax.swing.JFrame {
+class LoginFrame extends javax.swing.JFrame {
 
+    private View source;
     private IRouter router;
     
-    public LoginFrame(IRouter router) {
+    public LoginFrame(View source) {
         initComponents();
-        this.router = router;
+        this.source = source;
+        this.router = source.getRouter();
         ImageIcon icon = new ImageIcon("logo.png");
         this.setIconImage(icon.getImage());
     }
@@ -101,17 +103,17 @@ public class LoginFrame extends javax.swing.JFrame {
             String email = emailTextfield.getText();
             String password = new String(passwordTextfield.getPassword());
             User user = router.login(email, password);
-            new UserFrame(this, router, user).setVisible(true);
+            new UserFrame(source, this, user).setVisible(true);
             this.emailTextfield.setText("");
             this.passwordTextfield.setText("");
             this.setVisible(false);
         } catch(ControlException ex){
-            View.displayError(this, ex);
+            DefaultView.displayError(this, ex);
         }
     }//GEN-LAST:event_loginButtonActionPerformed
 
     private void signupButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signupButtonActionPerformed
-        new SignupDialog(this, router).setVisible(true);
+        new SignupDialog(source, this).setVisible(true);
     }//GEN-LAST:event_signupButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -2,8 +2,8 @@ package view;
 
 import control.ControlException;
 import control.IRouter;
+import control.dtos.DevelopmentFilter;
 import control.dtos.DisplayString;
-import control.dtos.Filter;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -14,12 +14,13 @@ import javax.swing.JFileChooser;
 import model.Task;
 import model.User;
 
-public class TaskFrame extends javax.swing.JFrame {
+class TaskFrame extends javax.swing.JFrame {
 
     private static final long DATE_MIN = -62135734039898l;
     
     private final ProjectFrame parent;
     private final IRouter router;
+    private final View source;
     private final Task task;
     private final User user;
     
@@ -27,7 +28,7 @@ public class TaskFrame extends javax.swing.JFrame {
     private final DefaultListModel developmentsListModel;
     private final DefaultListModel evidenceListModel;
     
-    public TaskFrame(ProjectFrame parent, IRouter router, Task task, User user) {
+    public TaskFrame(View source, ProjectFrame parent, Task task, User user) {
         initComponents();
         this.setLocationRelativeTo(parent);
         this.setIconImage(parent.getIconImage());
@@ -37,7 +38,8 @@ public class TaskFrame extends javax.swing.JFrame {
         this.evidenceListModel = new DefaultListModel();
         
         this.parent = parent;
-        this.router = router;
+        this.source = source;
+        this.router = source.getRouter();
         this.task = task;
         this.user = user;
         
@@ -84,12 +86,12 @@ public class TaskFrame extends javax.swing.JFrame {
             }
             
         } catch(ControlException ex) {
-            View.displayError(parent, ex);
+            DefaultView.displayError(parent, ex);
         }
     }
     
     private void openAddDevelopment(){
-        new AddDevelopmentDialog(this, router, task, calendar.getDate()).setVisible(true);
+        new AddDevelopmentDialog(source, this, task, calendar.getDate()).setVisible(true);
     }
     
     public void resetDevelopmentFilters(){
@@ -100,14 +102,14 @@ public class TaskFrame extends javax.swing.JFrame {
     private void openSubtask(){
         DisplayString subtask = (DisplayString)subtasksList.getSelectedValue();
         if(subtask == null)
-            View.displayError(this, "You must select a subtask to open.");
+            DefaultView.displayError(this, "You must select a subtask to open.");
         else{
             try {
                 Task subtask_ = router.getTask(subtask.getId());
-                new TaskFrame(parent, router, subtask_, user).setVisible(true);
+                new TaskFrame(source, parent, subtask_, user).setVisible(true);
                 this.dispose();
             } catch (ControlException ex) {
-                View.displayError(this, ex);
+                DefaultView.displayError(this, ex);
             }
         }
     }
@@ -115,7 +117,7 @@ public class TaskFrame extends javax.swing.JFrame {
     private void downloadEvidence(){
         DisplayString evidence = (DisplayString)evidenceList.getSelectedValue();
         if(evidence == null)
-            View.displayError(this, "You must select an evidence to download from the evidence list.");
+            DefaultView.displayError(this, "You must select an evidence to download from the evidence list.");
         else{
             JFileChooser chooser  = new JFileChooser();
             chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -125,7 +127,7 @@ public class TaskFrame extends javax.swing.JFrame {
                     String directory = chooser.getSelectedFile().getAbsolutePath();
                     router.downloadEvidence(evidence.getId(), directory);
                 } catch(ControlException ex){
-                    View.displayError(this, ex);
+                    DefaultView.displayError(this, ex);
                 }
             }
         }
@@ -165,7 +167,7 @@ public class TaskFrame extends javax.swing.JFrame {
             else{
                 startDateChooser.setDate(null);
                 endDateChooser.setDate(null);
-                View.displayError(this, "The dates picked must be in chronological order.");
+                DefaultView.displayError(this, "The dates picked must be in chronological order.");
             }
             
             try{
@@ -175,12 +177,12 @@ public class TaskFrame extends javax.swing.JFrame {
                     startLocal = start.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 if(end != null)
                     endLocal = end.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-                Filter filter = new Filter(null, null, startLocal, endLocal);
+                DevelopmentFilter filter = new DevelopmentFilter(startLocal, endLocal);
                 developmentsListModel.removeAllElements();
                 for(DisplayString development : router.getDevelopmentStrings(task.getId(), filter))
                     developmentsListModel.addElement(development);
             } catch(ControlException ex){
-                View.displayError(this, ex);
+                DefaultView.displayError(this, ex);
             }
         }
     }
@@ -194,7 +196,7 @@ public class TaskFrame extends javax.swing.JFrame {
                     for(DisplayString evidence : router.getEvidenceStrings(development.getId()))
                         evidenceListModel.addElement(evidence);
                 } catch (ControlException ex) {
-                    View.displayError(this, ex);
+                    DefaultView.displayError(this, ex);
                 }
             }
         }
@@ -582,7 +584,7 @@ public class TaskFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_returnMenuItemActionPerformed
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
-        View.dispose();
+        source.dispose();
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
     private void addDevelopmentMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addDevelopmentMenuItemActionPerformed

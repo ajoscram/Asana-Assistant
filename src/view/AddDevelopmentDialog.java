@@ -14,7 +14,7 @@ import javax.swing.JSpinner;
 import javax.swing.text.NumberFormatter;
 import model.Task;
 
-public class AddDevelopmentDialog extends javax.swing.JDialog {
+class AddDevelopmentDialog extends javax.swing.JDialog {
     
     private TaskFrame parent;
     private IRouter router;
@@ -22,7 +22,7 @@ public class AddDevelopmentDialog extends javax.swing.JDialog {
     
     private DefaultListModel evidenceListModel;
     
-    public AddDevelopmentDialog(TaskFrame parent, IRouter router, Task task, Date date) {
+    public AddDevelopmentDialog(View source, TaskFrame parent, Task task, Date date) {
         super(parent, true);
         initComponents();
         this.setLocationRelativeTo(parent);
@@ -30,7 +30,7 @@ public class AddDevelopmentDialog extends javax.swing.JDialog {
         this.setTitle("New Development");
         
         this.parent = parent;
-        this.router = router;
+        this.router = source.getRouter();
         this.task = task;
         
         this.evidenceListModel = new DefaultListModel();
@@ -54,14 +54,14 @@ public class AddDevelopmentDialog extends javax.swing.JDialog {
     private void removeEvidence(){
         String string = evidenceList.getSelectedValue();
         if(string == null)
-            View.displayError(this, "You must select an evidence entry to remove.");
+            DefaultView.displayError(this, "You must select an evidence entry to remove.");
         else
             evidenceListModel.removeElement(string);
     }
     
     private void addDevelopment(){
         try{
-            if(View.displayConfirm(this, "Adding a development is non-reversible.\nDo you want to save your changes?")){
+            if(DefaultView.displayConfirm(this, "Adding a development is non-reversible.\nDo you want to save your changes?")){
                 LocalDate date = dateChooser.getDate()
                         .toInstant()
                         .atZone(ZoneId.systemDefault())
@@ -73,12 +73,12 @@ public class AddDevelopmentDialog extends javax.swing.JDialog {
                     evidence.add((String)evidence_);
                 DevelopmentDTO development = new DevelopmentDTO(date, hours, description, evidence);
                 router.addDevelopment(task.getId(), development);
-                View.displayInfo(this, "Development added successfully.");
+                DefaultView.displayInfo(this, "Development added successfully.");
                 parent.resetDevelopmentFilters();
                 this.dispose();
             }
         } catch(ControlException ex) {
-            View.displayError(this, ex);
+            DefaultView.displayError(this, ex);
         }   
     }
     

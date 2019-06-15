@@ -1,9 +1,10 @@
 package control;
 
 import control.dtos.DevelopmentDTO;
+import control.dtos.DevelopmentFilter;
 import control.dtos.DisplayString;
-import control.dtos.Filter;
 import control.dtos.ProjectDTO;
+import control.dtos.TaskFilter;
 import control.dtos.UserDTO;
 import java.util.List;
 import model.Development;
@@ -12,12 +13,10 @@ import model.Project;
 import model.Task;
 import model.User;
 import parse.ParseException;
+import report.IReportPrinter;
 import report.ReportException;
 
 public interface IRouter {
-    enum ParseFormat { JSON }
-    enum PrintFormat { PDF }
-    
     //users
     User login(String email, String password) throws ControlException;
     void registerUser(UserDTO user) throws ControlException;
@@ -34,22 +33,22 @@ public interface IRouter {
     List<DisplayString> getCollabProjectStrings(long userId) throws ControlException;
     void banUser(long projectId, long userId) throws ControlException;
     void unbanUser(long projectId, long userId) throws ControlException;
-    void synchronize(long projectId, String filepath, ParseFormat format) throws ControlException, ParseException;
-    void printReport(long projectId, String filepath, PrintFormat format) throws ControlException, ReportException;
-    void printReport(long projectId, String filepath, PrintFormat format, Filter filter) throws ControlException, ReportException;
+    void synchronize(long projectId, String filepath, TaskParser parser) throws ControlException, ParseException;
+    void printReport(long projectId, String filepath, IReportPrinter printer) throws ControlException, ReportException;
+    void printReport(long projectId, String filepath, IReportPrinter printer, TaskFilter taskFilter, DevelopmentFilter developmentFilter) throws ControlException, ReportException;
     
     //tasks
     Task getTask(long id) throws ControlException;
     List<DisplayString> getTaskStrings(long projectId) throws ControlException;
-    List<DisplayString> getTaskStrings(long projectId, Filter filter) throws ControlException;
+    List<DisplayString> getTaskStrings(long projectId, TaskFilter filter) throws ControlException;
     List<DisplayString> getSubtaskStrings(long taskId) throws ControlException;
-    List<DisplayString> getSubtaskStrings(long taskId, Filter filter) throws ControlException;
+    List<DisplayString> getSubtaskStrings(long taskId, TaskFilter filter) throws ControlException;
     
     //developments
     void addDevelopment(long taskId, DevelopmentDTO dto) throws ControlException;
     Development getDevelopment(long id) throws ControlException;
     List<DisplayString> getDevelopmentStrings(long taskId) throws ControlException;
-    List<DisplayString> getDevelopmentStrings(long taskId, Filter filter) throws ControlException;
+    List<DisplayString> getDevelopmentStrings(long taskId, DevelopmentFilter filter) throws ControlException;
     
     //evidence
     Evidence getEvidence(long id) throws ControlException;

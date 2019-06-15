@@ -13,10 +13,9 @@ import java.util.List;
 import model.Task;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import parse.IParser;
 import parse.ParseException;
 
-public class JSONTaskParser implements IParser<List<TaskDTO>> {
+public class JSONTaskParser implements TaskParser {
     
     public JSONTaskParser(){ }
     

@@ -11,7 +11,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import model.Task;
 
-public class TaskTreeCellRenderer extends DefaultTreeCellRenderer{
+class TaskTreeCellRenderer extends DefaultTreeCellRenderer{
     
     private IRouter router;
     

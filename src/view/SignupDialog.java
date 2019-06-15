@@ -4,16 +4,16 @@ import control.ControlException;
 import control.IRouter;
 import control.dtos.UserDTO;
 
-public class SignupDialog extends javax.swing.JDialog {
+class SignupDialog extends javax.swing.JDialog {
     
     private IRouter router;
     
-    public SignupDialog(LoginFrame parent, IRouter router) {
+    public SignupDialog(View source, LoginFrame parent) {
         super(parent, true);
         initComponents();
         this.setLocationRelativeTo(parent);
         this.setIconImage(parent.getIconImage());
-        this.router = router;
+        this.router = source.getRouter();
     }
 
     @SuppressWarnings("unchecked")
@@ -105,12 +105,12 @@ public class SignupDialog extends javax.swing.JDialog {
             String password = new String(passwordTextfield.getPassword());
             UserDTO user = new UserDTO(name, email, password, asanaID);
             router.registerUser(user);
-            View.displayInfo(this, "Signed up correctly.");
+            DefaultView.displayInfo(this, "Signed up correctly.");
             this.dispose();
         } catch(NumberFormatException ex) {
-            View.displayError(this, "The \"Asana ID\" field must include a valid number.");
+            DefaultView.displayError(this, "The \"Asana ID\" field must include a valid number.");
         } catch(ControlException ex) {
-            View.displayError(this, ex);
+            DefaultView.displayError(this, ex);
         }
     }//GEN-LAST:event_signupButtonActionPerformed
 

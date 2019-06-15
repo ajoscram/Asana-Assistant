@@ -2,8 +2,9 @@ package view;
 
 import control.ControlException;
 import control.IRouter;
+import control.JSONTaskParser;
 import control.dtos.DisplayString;
-import control.dtos.Filter;
+import control.dtos.TaskFilter;
 import java.awt.event.ItemEvent;
 import java.util.List;
 import javax.swing.DefaultListModel;
@@ -18,13 +19,14 @@ import model.Task;
 import model.User;
 import parse.ParseException;
 
-public class ProjectFrame extends javax.swing.JFrame {
+class ProjectFrame extends javax.swing.JFrame {
     
     private static final String NONE = "";
     private static final String JSON_DESCRIPTION = "JSON (.json)";
 
     private final UserFrame parent;
     private final IRouter router;
+    private final View source;
     private final Project project;
     private final User user;
     
@@ -32,7 +34,7 @@ public class ProjectFrame extends javax.swing.JFrame {
     private final DefaultListModel bannedCollaboratorsListModel;
     private final DefaultTreeModel tasksTreeModel;
     
-    public ProjectFrame(UserFrame parent, IRouter router, Project project, User user, boolean isAdministrator) {
+    public ProjectFrame(View source, UserFrame parent, Project project, User user, boolean isAdministrator) {
         initComponents();
         this.setLocationRelativeTo(parent);
         this.setIconImage(parent.getIconImage());
@@ -42,7 +44,8 @@ public class ProjectFrame extends javax.swing.JFrame {
         this.tasksTreeModel = new DefaultTreeModel(new DefaultMutableTreeNode("root"));
         
         this.parent = parent;
-        this.router = router;
+        this.source = source;
+        this.router = source.getRouter();
         this.project = project;
         this.user = user;
         
@@ -93,19 +96,19 @@ public class ProjectFrame extends javax.swing.JFrame {
                 this.unbanCollaboratorMenuItem.setEnabled(false);
             }
         } catch(ControlException ex){
-            View.displayError(parent, ex);
+            DefaultView.displayError(parent, ex);
             this.dispose();
         }
     }
     
-    private DefaultMutableTreeNode getTaskNode(DisplayString task, Filter filter) throws ControlException{
+    private DefaultMutableTreeNode getTaskNode(DisplayString task, TaskFilter filter) throws ControlException{
         DefaultMutableTreeNode node = new DefaultMutableTreeNode(task);
         for(DisplayString subtask : router.getSubtaskStrings(task.getId(), filter))
             node.add(getTaskNode(subtask, filter));
         return node;
     }
     
-    private void filterTasks(Filter filter){
+    private void filterTasks(TaskFilter filter){
         try{
             DefaultMutableTreeNode root = (DefaultMutableTreeNode)tasksTreeModel.getRoot();
             root.removeAllChildren();
@@ -116,7 +119,7 @@ public class ProjectFrame extends javax.swing.JFrame {
             for(int i = 0; i < tasksTree.getRowCount(); i++)
                 tasksTree.expandRow(i);
         } catch(ControlException ex){
-            View.displayError(this, ex);
+            DefaultView.displayError(this, ex);
         }
     }
     
@@ -144,23 +147,23 @@ public class ProjectFrame extends javax.swing.JFrame {
             for(DisplayString collaborator : bannedCollaborators)
                 collaboratorFilterComboBox.addItem(collaborator);
         } catch(ControlException ex){
-            View.displayError(this, ex);
+            DefaultView.displayError(this, ex);
         }
     }
     
     public void filtersChanged(java.awt.event.ItemEvent evt){
         if(evt.getStateChange() == ItemEvent.SELECTED){
-            Filter filter;
+            TaskFilter filter;
             Object task = taskFilterComboBox.getSelectedItem();
             Object collaborator = collaboratorFilterComboBox.getSelectedItem();
             if(task instanceof DisplayString && collaborator instanceof DisplayString)
-                filter = new Filter(((DisplayString)task).getId(), ((DisplayString)collaborator).getId(), null, null);
+                filter = new TaskFilter(((DisplayString)task).getId(), ((DisplayString)collaborator).getId());
             else if(task instanceof DisplayString)
-                filter = new Filter(((DisplayString)task).getId(), null, null, null);
+                filter = new TaskFilter(((DisplayString)task).getId(), null);
             else if(collaborator instanceof DisplayString)
-                filter = new Filter(null, ((DisplayString)collaborator).getId(), null, null);
+                filter = new TaskFilter(null, ((DisplayString)collaborator).getId());
             else
-                filter = Filter.EMPTY;
+                filter = TaskFilter.EMPTY;
             filterTasks(filter);
         }
     }
@@ -178,20 +181,20 @@ public class ProjectFrame extends javax.swing.JFrame {
             for(DisplayString collaborator : bannedCollaborators)
                 bannedCollaboratorsListModel.addElement(collaborator);
         } catch(ControlException ex){
-            View.displayError(this, ex);
+            DefaultView.displayError(this, ex);
         }
     }
     
     private void banSelectedCollaborator(){
         DisplayString collaborator = (DisplayString)activeCollaboratorsList.getSelectedValue();
         if(collaborator == null)
-            View.displayError(this, "You must select an active collaborator to ban.");
+            DefaultView.displayError(this, "You must select an active collaborator to ban.");
         else{
             try {
                 router.banUser(project.getId(), collaborator.getId());
                 refreshCollaboratorLists();
             } catch (ControlException ex) {
-                View.displayError(this, ex);
+                DefaultView.displayError(this, ex);
             }
         }
     }
@@ -199,13 +202,13 @@ public class ProjectFrame extends javax.swing.JFrame {
     private void unbanSelectedCollaborator(){
         DisplayString collaborator = (DisplayString)bannedCollaboratorsList.getSelectedValue();
         if(collaborator == null)
-            View.displayError(this, "You must select a banned collaborator to un-ban.");
+            DefaultView.displayError(this, "You must select a banned collaborator to un-ban.");
         else{
             try {
                 router.unbanUser(project.getId(), collaborator.getId());
                 refreshCollaboratorLists();
             } catch (ControlException ex) {
-                View.displayError(this, ex);
+                DefaultView.displayError(this, ex);
             }
         }
     }
@@ -213,22 +216,22 @@ public class ProjectFrame extends javax.swing.JFrame {
     private void openSelectedTask(){
         TreePath path = tasksTree.getSelectionPath();
         if(path == null)
-            View.displayError(this, "You must select a task to open.");
+            DefaultView.displayError(this, "You must select a task to open.");
         else{
             try {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode)path.getLastPathComponent();
                 DisplayString string = (DisplayString)node.getUserObject();
                 Task task = router.getTask(string.getId());
-                new TaskFrame(this, router, task, user).setVisible(true);
+                new TaskFrame(source, this, task, user).setVisible(true);
                 this.setVisible(false);
             } catch (ControlException ex) {
-                View.displayError(this, ex);
+                DefaultView.displayError(this, ex);
             }
         }
     }
     
     private void synchronizeTasks(){
-        if(View.displayConfirm(this, "Synchronizing tasks is permanent.\nDo you wish to continue?")){
+        if(DefaultView.displayConfirm(this, "Synchronizing tasks is permanent.\nDo you wish to continue?")){
             JFileChooser chooser  = new JFileChooser();
             chooser.setDialogTitle("Select Tasks File");
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -239,22 +242,22 @@ public class ProjectFrame extends javax.swing.JFrame {
                 try{
                     String file = chooser.getSelectedFile().getAbsolutePath();
                     if(chooser.getFileFilter().getDescription().equals(JSON_DESCRIPTION))
-                        router.synchronize(project.getId(), file, IRouter.ParseFormat.JSON);
+                        router.synchronize(project.getId(), file, new JSONTaskParser());
                     refreshFilters();
                     //refreshing filters side-effect refreshes the task tree
                     refreshCollaboratorLists();
-                    View.displayInfo(this, "Tasks synchronized successfullly.");
+                    DefaultView.displayInfo(this, "Tasks synchronized successfullly.");
                 } catch(ControlException ex){
-                    View.displayError(this, ex);
+                    DefaultView.displayError(this, ex);
                 } catch(ParseException ex){
-                    View.displayError(this, ex);
+                    DefaultView.displayError(this, ex);
                 }
             }
         }
     }
     
     private void printReport(){
-        new ReportDialog(this, router, project).setVisible(true);
+        new ReportDialog(source, this, project).setVisible(true);
     }
 
     @SuppressWarnings("unchecked")
@@ -557,7 +560,7 @@ public class ProjectFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_openTaskMenuItemActionPerformed
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
-        View.dispose();
+        source.dispose();
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
     private void unbanCollaboratorMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unbanCollaboratorMenuItemActionPerformed

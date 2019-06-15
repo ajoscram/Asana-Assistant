@@ -1,25 +1,22 @@
 package control.controllers;
 
 import control.ControlException;
-import control.IRouter;
 import control.daos.ProjectDAO;
 import control.daos.TaskDAO;
 import control.dtos.DisplayString;
-import control.dtos.Filter;
+import control.dtos.TaskFilter;
+import control.dtos.DevelopmentFilter;
 import control.dtos.ProjectDTO;
 import java.util.List;
 import model.Project;
 import control.dtos.TaskDTO;
 import java.util.ArrayList;
-import parse.IParser;
-import control.JSONTaskParser;
 import control.ProjectReportBuilder;
-import java.time.LocalDate;
+import control.TaskParser;
 import parse.ParseException;
 import report.IReportPrinter;
 import report.Report;
 import report.ReportException;
-import report.printers.PDFReportPrinter;
 
 public class ProjectController {
     
@@ -61,50 +58,28 @@ public class ProjectController {
         dao.unbanUser(projectId, userId);
     }
     
-    private IParser<List<TaskDTO>> getParser(IRouter.ParseFormat format) throws ControlException {
-        switch(format){
-            case JSON:
-                return new JSONTaskParser();
-            default:
-                throw new ControlException(ControlException.Type.UNKNOWN_PARSER_TYPE);
-        }
-    }
-    
-    public void synchronize(long projectId, String filepath, IRouter.ParseFormat format) throws ControlException, ParseException{
-        IParser<List<TaskDTO>> parser = getParser(format);
+    public void synchronize(long projectId, String filepath, TaskParser parser) throws ControlException, ParseException{
         List<TaskDTO> tasks = parser.parse(filepath);
         TaskDAO taskDAO = new TaskDAO();
         for(TaskDTO task : tasks)
             taskDAO.addTask(projectId, task);
     }
     
-    private IReportPrinter getReportPrinter(IRouter.PrintFormat format) throws ControlException {
-        switch(format){
-            case PDF:
-                return new PDFReportPrinter();
-            default:
-                throw new ControlException(ControlException.Type.UNKNOWN_PRINTER_TYPE);
-        }
-    }
-    
-    public void printReport(long id, String filepath, IRouter.PrintFormat format) throws ControlException, ReportException{
+    public void printReport(long id, String filepath, IReportPrinter printer) throws ControlException, ReportException{
         ProjectReportBuilder reportBuilder = new ProjectReportBuilder();
         Project project = dao.getProject(id);
         Report report = reportBuilder.build(project);
-        IReportPrinter printer = getReportPrinter(format);
         printer.print(report, filepath);
     }
     
-    public void printReport(long id, String filepath, IRouter.PrintFormat format, Filter filter) throws ControlException, ReportException {
-        filepath += "\\" + LocalDate.now() + " Report." + format;
+    public void printReport(long id, String filepath, IReportPrinter printer, TaskFilter taskFilter, DevelopmentFilter developmentFilter) throws ControlException, ReportException {
         ProjectReportBuilder reportBuilder = new ProjectReportBuilder()
-                .setAsignee(filter.getAsigneeId())
-                .setTask(filter.getTaskId())
-                .setStart(filter.getStart())
-                .setEnd(filter.getEnd());
+                .setAsignee(taskFilter.getAsigneeId())
+                .setTask(taskFilter.getTaskId())
+                .setStart(developmentFilter.getStart())
+                .setEnd(developmentFilter.getEnd());
         Project project = dao.getProject(id);
         Report report = reportBuilder.build(project);
-        IReportPrinter printer = getReportPrinter(format);
         printer.print(report, filepath);
     }
 }

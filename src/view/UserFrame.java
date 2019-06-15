@@ -12,17 +12,19 @@ public class UserFrame extends javax.swing.JFrame {
 
     private LoginFrame parent;
     private IRouter router;
+    private View source;
     private User user;
     
     private final DefaultListModel managedListModel;
     private final DefaultListModel collaborateListModel;
     
-    public UserFrame(LoginFrame parent, IRouter router, User user) {
+    public UserFrame(View source, LoginFrame parent, User user) {
         initComponents();
         this.setLocationRelativeTo(parent);
         this.setIconImage(parent.getIconImage());
         this.parent = parent;
-        this.router = router;
+        this.source = source;
+        this.router = source.getRouter();
         this.user = user;
         this.managedListModel = new DefaultListModel();
         this.collaborateListModel = new DefaultListModel();
@@ -40,7 +42,7 @@ public class UserFrame extends javax.swing.JFrame {
             for(DisplayString string : strings)
                 managedListModel.addElement(string);
         } catch(ControlException ex) {
-            View.displayError(this, ex);
+            DefaultView.displayError(this, ex);
         }
     }
     
@@ -51,7 +53,7 @@ public class UserFrame extends javax.swing.JFrame {
             for(DisplayString string : strings)
                 collaborateListModel.addElement(string);
         } catch(ControlException ex) {
-            View.displayError(this, ex);
+            DefaultView.displayError(this, ex);
         }
     }
     
@@ -60,22 +62,22 @@ public class UserFrame extends javax.swing.JFrame {
             Project project;
             if(this.tabbedPane.getSelectedComponent() == this.managedScrollpane && this.managedList.getSelectedValue() != null){
                 project = router.getProject(((DisplayString)managedList.getSelectedValue()).getId());
-                new ProjectFrame(this, router, project, user, true).setVisible(true);
+                new ProjectFrame(source, this, project, user, true).setVisible(true);
                 this.setVisible(false);
             } else if(this.tabbedPane.getSelectedComponent() == this.collaborateScrollpane && this.collaborateList.getSelectedValue() != null) {
                 project = router.getProject(((DisplayString)collaborateList.getSelectedValue()).getId());
-                new ProjectFrame(this, router, project, user, false).setVisible(true);
+                new ProjectFrame(source, this, project, user, false).setVisible(true);
                 this.setVisible(false);
             }
             else
-                View.displayError(this, "Please select a project first.");
+                DefaultView.displayError(this, "Please select a project first.");
         } catch (ControlException ex) {
-            View.displayError(this, ex);
+            DefaultView.displayError(this, ex);
         }
     }
     
     private void addProject(){
-        new AddProjectDialog(this, router, user).setVisible(true);
+        new AddProjectDialog(source, this, user).setVisible(true);
     }
     
     @SuppressWarnings("unchecked")
@@ -226,7 +228,7 @@ public class UserFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_logoutMenuItemActionPerformed
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
-        View.dispose();
+        source.dispose();
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

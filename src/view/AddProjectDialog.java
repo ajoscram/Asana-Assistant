@@ -5,19 +5,19 @@ import control.IRouter;
 import control.dtos.ProjectDTO;
 import model.User;
 
-public class AddProjectDialog extends javax.swing.JDialog {
+class AddProjectDialog extends javax.swing.JDialog {
     
     private User user;
     private IRouter router;
     private UserFrame parent;
     
-    public AddProjectDialog(UserFrame parent, IRouter router, User user) {
+    public AddProjectDialog(View source, UserFrame parent, User user) {
         super(parent, true);
         initComponents();
         this.setLocationRelativeTo(parent);
         this.parent = parent;
         this.user = user;
-        this.router = router;
+        this.router = source.getRouter();
     }
 
     @SuppressWarnings("unchecked")
@@ -74,10 +74,10 @@ public class AddProjectDialog extends javax.swing.JDialog {
             ProjectDTO project = new ProjectDTO(nameTextfield.getText(), user.getId());
             router.addProject(project);
             parent.reloadManagedList();
-            View.displayInfo(this, "Project added!");
+            DefaultView.displayInfo(this, "Project added!");
             this.dispose();
         } catch (ControlException ex) {
-            View.displayError(this, ex);
+            DefaultView.displayError(this, ex);
         }
     }//GEN-LAST:event_addButtonActionPerformed
 

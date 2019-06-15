@@ -2,8 +2,9 @@ package view;
 
 import control.ControlException;
 import control.IRouter;
+import control.dtos.DevelopmentFilter;
 import control.dtos.DisplayString;
-import control.dtos.Filter;
+import control.dtos.TaskFilter;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
@@ -12,8 +13,9 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import model.Project;
 import report.ReportException;
+import report.printers.PDFReportPrinter;
 
-public class ReportDialog extends javax.swing.JDialog {
+class ReportDialog extends javax.swing.JDialog {
 
     private static final String NONE = "";
     private static final String PDF_DESCRIPTION = "PDF (.pdf)";
@@ -21,13 +23,13 @@ public class ReportDialog extends javax.swing.JDialog {
     private IRouter router;
     private Project project;
     
-    public ReportDialog(ProjectFrame parent, IRouter router, Project project) {
+    public ReportDialog(View source, ProjectFrame parent, Project project) {
         super(parent, true);
         initComponents();
         this.setLocationRelativeTo(parent);
         this.setIconImage(parent.getIconImage());
         
-        this.router = router;
+        this.router = source.getRouter();
         this.project = project;
         
         try{
@@ -48,7 +50,7 @@ public class ReportDialog extends javax.swing.JDialog {
             
             fileChooser.addChoosableFileFilter(new FileNameExtensionFilter(PDF_DESCRIPTION, "pdf"));
         } catch(ControlException ex) {
-            View.displayError(parent, ex);
+            DefaultView.displayError(parent, ex);
             this.dispose();
         }
     }
@@ -57,8 +59,8 @@ public class ReportDialog extends javax.swing.JDialog {
         
         if(evt.getActionCommand().equals(JFileChooser.CANCEL_SELECTION))
             this.dispose();
-        else if(!fileChooser.getSelectedFile().exists())
-            View.displayError(this, "You must specify a valid directory in the \"Folder name\" field.");
+        else if(!fileChooser.getSelectedFile().isDirectory())
+            DefaultView.displayError(this, "You must specify a valid directory in the \"Folder name\" field.");
         else{
             LocalDate start = null;
             LocalDate end = null;
@@ -83,17 +85,20 @@ public class ReportDialog extends javax.swing.JDialog {
 
             String path = fileChooser.getSelectedFile().getAbsolutePath();
 
-            Filter filter = new Filter(taskId, userId, start, end);
+            TaskFilter taskFilter = new TaskFilter(taskId, userId);
+            DevelopmentFilter developmentFilter = new DevelopmentFilter(start, end);
 
             try{
-                if(fileChooser.getFileFilter().getDescription().equals(PDF_DESCRIPTION))
-                    router.printReport(project.getId(), path, IRouter.PrintFormat.PDF, filter);
-                View.displayInfo(this, "Report printed successfully.");
+                if(fileChooser.getFileFilter().getDescription().equals(PDF_DESCRIPTION)){
+                    String filepath = path + "\\" + LocalDate.now() + " Report.pdf";
+                    router.printReport(project.getId(), filepath, new PDFReportPrinter(), taskFilter, developmentFilter);
+                }
+                DefaultView.displayInfo(this, "Report printed successfully.");
                 this.dispose();
             } catch(ControlException ex){
-                View.displayError(this, ex);
+                DefaultView.displayError(this, ex);
             } catch(ReportException ex){
-                View.displayError(this, ex);
+                DefaultView.displayError(this, ex);
             }
         }
     }

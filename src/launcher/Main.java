@@ -5,6 +5,7 @@ import control.Router;
 import control.daos.connection.Connection;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import view.DefaultView;
 import view.View;
 
 public class Main {
@@ -17,9 +18,9 @@ public class Main {
         }
         try {
             Connection.connect();
-            View.display(Router.getInstance());
+            new DefaultView(new Router()).display();
         } catch(ControlException ex) {
-            View.displayError(null, ex);
+            DefaultView.displayError(null, ex);
         }
     }
 }

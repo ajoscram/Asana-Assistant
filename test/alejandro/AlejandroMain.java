@@ -34,8 +34,7 @@ import report.Section;
 import report.printers.PDFReportPrinter;
 import report.sections.ListSection;
 import report.sections.TextSection;
-import view.LoginFrame;
-import view.View;
+import view.DefaultView;
 
 public class AlejandroMain {
 
@@ -80,9 +79,9 @@ public class AlejandroMain {
         try {
            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) { 
-            View.displayError(null, "You're not using Windows, so the interface might look a little clunky :(");
+            DefaultView.displayError(null, "You're not using Windows, so the interface might look a little clunky :(");
         }
-        View.display(new DummyRouter());
+        new DefaultView(new DummyRouter()).display();
     }
     
     private static void printTask(TaskDTO task, String indent){

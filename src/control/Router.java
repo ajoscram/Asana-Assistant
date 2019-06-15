@@ -5,10 +5,10 @@ import control.controllers.*;
 import control.dtos.*;
 import model.*;
 import parse.ParseException;
+import report.IReportPrinter;
 import report.ReportException;
 
 public class Router implements IRouter {
-    private static Router INSTANCE;
 
     private UserController userController;
     private ProjectController projectController;
@@ -16,18 +16,12 @@ public class Router implements IRouter {
     private DevelopmentController developmentController;
     private EvidenceController evidenceController;
     
-    private Router() {
+    public Router() {
         this.userController = new UserController();
         this.projectController = new ProjectController();
         this.taskController = new TaskController();
         this.developmentController = new DevelopmentController();
         this.evidenceController = new EvidenceController();
-    }
-
-    public static Router getInstance() {
-        if(INSTANCE == null)
-            INSTANCE = new Router();
-        return INSTANCE;
     }
 
     //Users
@@ -98,18 +92,18 @@ public class Router implements IRouter {
     }
 
     @Override
-    public void synchronize(long projectId, String filepath, ParseFormat format) throws ControlException, ParseException{
-        projectController.synchronize(projectId, filepath, format);
+    public void synchronize(long projectId, String filepath, TaskParser parser) throws ControlException, ParseException{
+        projectController.synchronize(projectId, filepath, parser);
     }
               
     @Override
-    public void printReport(long projectId, String filepath, PrintFormat format) throws ControlException, ReportException {
-        projectController.printReport(projectId, filepath, format);
+    public void printReport(long projectId, String filepath, IReportPrinter printer) throws ControlException, ReportException {
+        projectController.printReport(projectId, filepath, printer);
     }
     
     @Override
-    public void printReport(long projectId, String filepath, PrintFormat format, Filter filter) throws ControlException, ReportException {
-        projectController.printReport(projectId, filepath, format, filter);
+    public void printReport(long projectId, String filepath, IReportPrinter printer, TaskFilter taskFilter, DevelopmentFilter developmentFilter) throws ControlException, ReportException {
+        projectController.printReport(projectId, filepath, printer, taskFilter, developmentFilter);
     }
     
     //Tasks
@@ -124,7 +118,7 @@ public class Router implements IRouter {
     }
     
     @Override
-    public List<DisplayString> getTaskStrings(long projectId, Filter filter) throws ControlException{
+    public List<DisplayString> getTaskStrings(long projectId, TaskFilter filter) throws ControlException{
         return taskController.getTaskStrings(projectId, filter);
     }
 
@@ -134,7 +128,7 @@ public class Router implements IRouter {
     }
     
     @Override
-    public List<DisplayString> getSubtaskStrings(long taskId, Filter filter) throws ControlException{
+    public List<DisplayString> getSubtaskStrings(long taskId, TaskFilter filter) throws ControlException{
         return taskController.getSubtaskStrings(taskId, filter);
     }
 
@@ -155,7 +149,7 @@ public class Router implements IRouter {
     }
     
     @Override
-    public List<DisplayString> getDevelopmentStrings(long taskId, Filter filter) throws ControlException{
+    public List<DisplayString> getDevelopmentStrings(long taskId, DevelopmentFilter filter) throws ControlException{
         return developmentController.getDevelopmentStrings(taskId, filter);
     }
     

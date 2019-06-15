@@ -2,10 +2,12 @@ package alejandro;
 
 import control.ControlException;
 import control.IRouter;
+import control.TaskParser;
 import control.dtos.DevelopmentDTO;
+import control.dtos.DevelopmentFilter;
 import control.dtos.DisplayString;
-import control.dtos.Filter;
 import control.dtos.ProjectDTO;
+import control.dtos.TaskFilter;
 import control.dtos.UserDTO;
 import java.time.LocalDate;
 import java.time.Month;
@@ -17,6 +19,7 @@ import model.Project;
 import model.Task;
 import model.User;
 import parse.ParseException;
+import report.IReportPrinter;
 import report.ReportException;
 
 public class DummyRouter implements IRouter {
@@ -178,24 +181,24 @@ public class DummyRouter implements IRouter {
     }
 
     @Override
-    public void synchronize(long projectId, String filepath, ParseFormat format) throws ControlException, ParseException {
+    public void synchronize(long projectId, String filepath, TaskParser parser) throws ControlException, ParseException {
         System.out.println("File: " + filepath);
         System.out.println("ID: " + projectId);
-        System.out.println("Format: " + format);
+        System.out.println("Format: " + parser.getClass().getName());
     }
 
     @Override
-    public void printReport(long projectId, String filepath, PrintFormat format) throws ControlException, ReportException {
+    public void printReport(long projectId, String filepath, IReportPrinter printer) throws ControlException, ReportException {
         System.out.println("Directory: " + filepath);
         System.out.println("ID: " + projectId);
-        System.out.println("Format: " + format);
+        System.out.println("Format: " + printer.getClass().getName());
     }
 
     @Override
-    public void printReport(long projectId, String filepath, PrintFormat format, Filter filter) throws ControlException, ReportException {
+    public void printReport(long projectId, String filepath, IReportPrinter printer, TaskFilter taskFilter, DevelopmentFilter developmentFilter) throws ControlException, ReportException {
         System.out.println("Directory: " + filepath);
         System.out.println("ID: " + projectId);
-        System.out.println("Format: " + format);
+        System.out.println("Format: " + printer.getClass().getName());
     }
 
     @Override
@@ -218,7 +221,7 @@ public class DummyRouter implements IRouter {
     }
 
     @Override
-    public List<DisplayString> getTaskStrings(long projectId, Filter filter) throws ControlException {
+    public List<DisplayString> getTaskStrings(long projectId, TaskFilter filter) throws ControlException {
         ArrayList<DisplayString> strings = new ArrayList();
         for(Task task : tasks){
             if(filter.getTaskId() == null || (filter.getTaskId() != null && task.getId() == filter.getTaskId()))
@@ -237,7 +240,7 @@ public class DummyRouter implements IRouter {
     }
 
     @Override
-    public List<DisplayString> getSubtaskStrings(long taskId, Filter filter) throws ControlException {
+    public List<DisplayString> getSubtaskStrings(long taskId, TaskFilter filter) throws ControlException {
         ArrayList<DisplayString> strings = new ArrayList();
         if(taskId == 0 || taskId == 1 || taskId ==2)
             for(Task task : subtasks)
@@ -269,7 +272,7 @@ public class DummyRouter implements IRouter {
     }
 
     @Override
-    public List<DisplayString> getDevelopmentStrings(long taskId, Filter filter) throws ControlException {
+    public List<DisplayString> getDevelopmentStrings(long taskId, DevelopmentFilter filter) throws ControlException {
         ArrayList<DisplayString> strings = new ArrayList();
         String string;
         for(Development development : developments){
