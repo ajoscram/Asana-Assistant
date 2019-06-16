@@ -8,12 +8,12 @@ import model.Evidence;
 
 public class DummyEvidenceDAO extends EvidenceDAO{
 
-    private Evidence e0 = new Evidence(0, "limpio_arriba1.png");
-    private Evidence e1 = new Evidence(1, "limpio_arriba2.png");
-    private Evidence e2 = new Evidence(2, "limpio_arriba3.png");
-    private Evidence e3 = new Evidence(3, "limpio_abajo.png");
-    private Evidence e4 = new Evidence(4, "plantas_humedas.jpeg");
-    private Evidence e5 = new Evidence(5, "plantas_humedas1.jpeg");
+    private Evidence e0 = new Evidence(0, "0", "limpio_arriba1.png");
+    private Evidence e1 = new Evidence(1, "1","limpio_arriba2.png");
+    private Evidence e2 = new Evidence(2, "2","limpio_arriba3.png");
+    private Evidence e3 = new Evidence(3, "3","limpio_abajo.png");
+    private Evidence e4 = new Evidence(4, "4","plantas_humedas.jpeg");
+    private Evidence e5 = new Evidence(5, "5","plantas_humedas1.jpeg");
     
     @Override
     public List<Evidence> getEvidences(long developmentId) throws ControlException{

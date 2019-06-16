@@ -36,10 +36,7 @@ class LoginFrame extends javax.swing.JFrame {
 
         jLabel3.setText("Password:");
 
-        emailTextfield.setText("ajoscram@gmail.com");
         emailTextfield.setName(""); // NOI18N
-
-        passwordTextfield.setText("1234");
 
         signupButton.setText("Sign Up");
         signupButton.addActionListener(new java.awt.event.ActionListener() {

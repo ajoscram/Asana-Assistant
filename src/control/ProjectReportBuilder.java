@@ -68,7 +68,7 @@ public class ProjectReportBuilder implements IReportBuilder{
         return this;
     }
     
-    private boolean validateAsignee(User taskAsignee){
+    protected boolean validateAsignee(User taskAsignee){
         if(asignee == null)
             return true;
         else if((asignee != null && taskAsignee != null) &&
@@ -78,11 +78,11 @@ public class ProjectReportBuilder implements IReportBuilder{
             return false;
     }
     
-    private boolean validateTask(Task task){
+    protected boolean validateTask(Task task){
         return this.task == null || (this.task != null && task.getId() == this.task.getId());
     }
     
-    private List<Section> getHeaderSections(Project project){
+    protected List<Section> getHeaderSections(Project project){
         ArrayList<Section> sections = new ArrayList();
         sections.add(new TextSection("name", project.getName()));
         sections.add(new TextSection("id", Long.toString(project.getId())));
@@ -95,7 +95,7 @@ public class ProjectReportBuilder implements IReportBuilder{
         return sections;
     }
     
-    private ListSection getDevelopmentSection(Development development) throws ControlException{
+    protected ListSection getDevelopmentSection(Development development) throws ControlException{
         ListSection developmentSection = new ListSection(development.getDate().format(DateTimeFormatter.ISO_DATE));
         developmentSection.addSection(new TextSection("description", development.getDescription()));
         developmentSection.addSection(new TextSection("work", development.getHours() + " hours"));
@@ -106,7 +106,7 @@ public class ProjectReportBuilder implements IReportBuilder{
         return developmentSection;
     }
     
-    private List<Section> getTaskSections(Task task, Task parent) throws ControlException{
+    protected List<Section> getTaskSections(Task task, Task parent) throws ControlException{
         ArrayList<Section> sections = new ArrayList();
         User taskAsignee = userDAO.getAsignee(task.getId());
         if(validateAsignee(taskAsignee) && validateTask(task)){
@@ -129,7 +129,7 @@ public class ProjectReportBuilder implements IReportBuilder{
         return sections;
     }
     
-    private List<Section> getTaskSections(Task task) throws ControlException{
+    protected List<Section> getTaskSections(Task task) throws ControlException{
         return getTaskSections(task, null);
     }
     
@@ -137,13 +137,13 @@ public class ProjectReportBuilder implements IReportBuilder{
     public Report build(Object object) throws ReportException{
         try{
             Project project = (Project)object;
-        Report report = new Report();
-        report.addSections(getHeaderSections(project));
-        ListSection taskSections = new ListSection("tasks");
-        for(Task task_ : taskDAO.getTasks(project.getId()))
-            taskSections.addSections(getTaskSections(task_));
-        report.addSection(taskSections);
-        return report;
+            Report report = new Report();
+            report.addSections(getHeaderSections(project));
+            ListSection taskSections = new ListSection("tasks");
+            for(Task task_ : taskDAO.getTasks(project.getId()))
+                taskSections.addSections(getTaskSections(task_));
+            report.addSection(taskSections);
+            return report;
         }catch(ControlException ce){
             throw new ReportException(ReportException.Type.FILE_IO_ERROR);
         }

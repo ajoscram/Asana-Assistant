@@ -85,12 +85,12 @@ public class DummyRouter implements IRouter {
         developments.add(new Development(3, LocalDate.of(2019, Month.MAY, 30), 3, "Tubo cerrado.", LocalDate.of(2019, Month.MAY, 30)));
         
         evidences = new ArrayList();
-        evidences.add(new Evidence(0, "limpio_arriba1.png"));
-        evidences.add(new Evidence(1, "limpio_arriba2.png"));
-        evidences.add(new Evidence(2, "limpio_arriba3.png"));
-        evidences.add(new Evidence(3, "limpio_abajo.png"));
-        evidences.add(new Evidence(4, "plantas_humedas.jpeg"));
-        evidences.add(new Evidence(5, "plantas_humedas1.jpeg"));
+        evidences.add(new Evidence(0, "0", "limpio_arriba1.png"));
+        evidences.add(new Evidence(1, "1", "limpio_arriba2.png"));
+        evidences.add(new Evidence(2, "2", "limpio_arriba3.png"));
+        evidences.add(new Evidence(3, "3", "limpio_abajo.png"));
+        evidences.add(new Evidence(4, "4", "plantas_humedas.jpeg"));
+        evidences.add(new Evidence(5, "5", "plantas_humedas1.jpeg"));
     }
     
     @Override
@@ -252,7 +252,7 @@ public class DummyRouter implements IRouter {
     public void addDevelopment(long taskId, DevelopmentDTO dto) throws ControlException {
         developments.add(new Development(developments.size(), dto.getDate(), dto.getHours(), dto.getDescription(), LocalDate.now()));
         for(String evidence : dto.getEvidenceFilepaths())
-            evidences.add(new Evidence(evidences.size(), evidence));
+            evidences.add(new Evidence(evidences.size(), String.valueOf(evidences.size()), evidence));
     }
 
     @Override

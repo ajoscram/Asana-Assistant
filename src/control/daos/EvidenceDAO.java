@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import model.Evidence;
@@ -26,9 +27,10 @@ public class EvidenceDAO {
             if(file.isFile()){
                 new File(EVIDENCE_FOLDER_PATH).mkdir();
                 String filename = file.getName();
-                Path newPath = Paths.get(EVIDENCE_FOLDER_PATH + File.separator + filename);
+                String diskname = Instant.now().toString().replace(':', '.');
+                Path newPath = Paths.get(EVIDENCE_FOLDER_PATH + File.separator + diskname);
                 Files.copy(file.toPath(), newPath, StandardCopyOption.REPLACE_EXISTING);
-                Connection.getInstance().queryinsert("EXEC USP_ADDEVIDENCE "+developmentId+","+"'"+filename+"'");
+                Connection.getInstance().queryinsert("EXEC USP_ADDEVIDENCE "+developmentId+", '"+diskname+"', '" + filename + "'");
             } else
                 throw new ControlException(ControlException.Type.IO_ERROR, "The file given doesn't exist or can't be read from.");
         } catch(IOException ex){
@@ -64,11 +66,11 @@ public class EvidenceDAO {
             }
             if(rs.next()==true){
                 Long IDevidence=rs.getLong("IDevidence");
-                String filepath = rs.getString("filepath");
-               
-                return new Evidence(IDevidence,filepath);
+                String diskname = rs.getString("filepath");
+                String filename = rs.getString("nombre");
+                return new Evidence(IDevidence, diskname, filename);
             }else{
-                throw new ControlException(ControlException.Type.NON_EXISTENT_VALUE,"Error: User not found");
+                throw new ControlException(ControlException.Type.NON_EXISTENT_VALUE,"Error: Evidence not found");
             }
         } catch(SQLException ex){
             int errorCode = ex.getErrorCode();
@@ -103,8 +105,9 @@ public class EvidenceDAO {
             
             while(rs.next()){
                 Long IDevidence=rs.getLong("IDevidence");
-                String filepath = rs.getString("filepath");
-                Evidence evidence = new Evidence(IDevidence,filepath);
+                String diskname = rs.getString("filepath");
+                String filename = rs.getString("nombre");
+                Evidence evidence = new Evidence(IDevidence,diskname,filename);
                 listaEvidencias.add(evidence);
             }
             return listaEvidencias;
@@ -134,7 +137,7 @@ public class EvidenceDAO {
                 throw new ControlException(ControlException.Type.IO_ERROR, "The directory specified does not exist or can't be read from.");
             else{
                 Evidence evidence = getEvidence(id);
-                File file = new File(EVIDENCE_FOLDER_PATH + File.separator + evidence.getFilename());
+                File file = new File(EVIDENCE_FOLDER_PATH + File.separator + evidence.getDiskname());
                 if(!file.isFile())
                     throw new ControlException(ControlException.Type.IO_ERROR, "Evidence file is missing. Was it deleted by accident?");
                 else{

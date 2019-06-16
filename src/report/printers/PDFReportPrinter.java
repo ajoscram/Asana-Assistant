@@ -22,11 +22,11 @@ public class PDFReportPrinter implements IReportPrinter {
     
     public PDFReportPrinter(){}
     
-    private Chunk getChunk(TextSection section){
+    protected Chunk getChunk(TextSection section){
         return new Chunk(section.getText());
     }
     
-    private List getList(ListSection listSection) throws ReportException {
+    protected List getList(ListSection listSection) throws ReportException {
         List list = new List(List.UNORDERED, 10);
         for(Element element : parse(listSection.getSections())){
             if(element instanceof Paragraph)
@@ -37,7 +37,7 @@ public class PDFReportPrinter implements IReportPrinter {
         return list;
     }
     
-    private java.util.List<Element> parse(java.util.List<Section> sections) throws ReportException {
+    protected java.util.List<Element> parse(java.util.List<Section> sections) throws ReportException {
         ArrayList<Element> elements = new ArrayList();
         for(Section section : sections){
             if(section instanceof ListSection){

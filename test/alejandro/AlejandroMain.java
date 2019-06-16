@@ -21,6 +21,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -39,7 +41,11 @@ import view.DefaultView;
 public class AlejandroMain {
 
     public static void main(String[] args) throws ReportException, ParseException, IOException, parse.ParseException {
-        /*TEST REPORTS
+        String instant = Instant.now().toString().replace(':', '.');
+        System.out.println(instant);
+        
+        
+        /*REPORTS TEST
         Report report = new Report();
         TextSection title = new TextSection("title", "Lorem Ipsum");
         TextSection paragraph = new TextSection("paragraph", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
@@ -59,7 +65,7 @@ public class AlejandroMain {
         
         new PDFReportPrinter().print(report, "C:\\Users\\Alejandro\\Desktop\\report.pdf");*/
         
-        /*TEST PROJECT REPORT BUILDER
+        /*PROJECT REPORT BUILDER TEST
         Project project = new Project(0, "Limpieza de Zonas Exteriores", LocalDate.of(2019, Month.MAY, 26));
         DummyUserDAO userDAO = new DummyUserDAO();
         DummyTaskDAO taskDAO = new DummyTaskDAO();
@@ -69,19 +75,21 @@ public class AlejandroMain {
         Report report = builder.build(project);
         new PDFReportPrinter().print(report, "C:\\Users\\Alejandro\\Desktop\\report.pdf");*/
         
-        /*TEST TASK JSON PARSER
+        /*TASK JSON PARSER TEST
         JSONTaskParser parser = new JSONTaskParser();
         List<TaskDTO> tasks = parser.parse("tasks.json");
         for(TaskDTO task : tasks)
             printTask(task, "");*/
        
-        /*UI TEST*/
+        
+        
+        /*UI TEST
         try {
            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) { 
             DefaultView.displayError(null, "You're not using Windows, so the interface might look a little clunky :(");
         }
-        new DefaultView(new DummyRouter()).display();
+        new DefaultView(new DummyRouter()).display();*/
     }
     
     private static void printTask(TaskDTO task, String indent){
