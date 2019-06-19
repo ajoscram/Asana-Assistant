@@ -1,8 +1,8 @@
 package alejandro;
 
-import control.daos.UserDAO;
-import model.User;
-import control.ControlException;
+import asana_assistant_1.control.daos.UserDAO;
+import asana_assistant_1.model.User;
+import asana_assistant_1.control.ControlException;
 
 public class DummyUserDAO extends UserDAO {
     private User u1 = new User(69, 69, "Alejandro Schmidt", "ajsocram@gmail.com", true);

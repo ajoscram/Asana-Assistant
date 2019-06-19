@@ -1,22 +1,22 @@
 package alejandro;
 
 
-import control.ControlException;
-import control.IRouter;
-import control.ProjectReportBuilder;
-import control.dtos.TaskDTO;
+import asana_assistant_1.control.ControlException;
+import asana_assistant_1.control.IRouter;
+import asana_assistant_1.control.ProjectReportBuilder;
+import asana_assistant_1.control.dtos.TaskDTO;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
-import model.Project;
+import asana_assistant_1.model.Project;
 import org.json.simple.JSONObject;
 //import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import control.JSONTaskParser;
-import control.Router;
-import control.daos.connection.Connection;
+import asana_assistant_1.control.JSONTaskParser;
+import asana_assistant_1.control.Router;
+import asana_assistant_1.control.daos.connection.Connection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,18 +29,18 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import model.Task;
-import report.Report;
-import report.ReportException;
-import report.Section;
-import report.printers.PDFReportPrinter;
-import report.sections.ListSection;
-import report.sections.TextSection;
-import view.DefaultView;
+import asana_assistant_1.model.Task;
+import asana_assistant_1.report.Report;
+import asana_assistant_1.report.ReportException;
+import asana_assistant_1.report.Section;
+import asana_assistant_1.report.printers.PDFReportPrinter;
+import asana_assistant_1.report.sections.ListSection;
+import asana_assistant_1.report.sections.TextSection;
+import asana_assistant_1.view.DefaultView;
 
 public class AlejandroMain {
 
-    public static void main(String[] args) throws ReportException, ParseException, IOException, parse.ParseException {
+    public static void main(String[] args) throws ReportException, ParseException, IOException, asana_assistant_1.parse.ParseException {
         String instant = Instant.now().toString().replace(':', '.');
         System.out.println(instant);
         

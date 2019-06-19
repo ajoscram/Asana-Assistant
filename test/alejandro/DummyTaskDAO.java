@@ -1,12 +1,12 @@
 package alejandro;
 
-import control.ControlException;
-import control.daos.TaskDAO;
+import asana_assistant_1.control.ControlException;
+import asana_assistant_1.control.daos.TaskDAO;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
-import model.Task;
+import asana_assistant_1.model.Task;
 
 public class DummyTaskDAO extends TaskDAO{
     private Task t0 = new Task(0, "Mantenimiento", LocalDate.of(2019, Month.MAY, 27), LocalDate.of(2019, Month.MAY, 30), null, Task.Type.SECTION);

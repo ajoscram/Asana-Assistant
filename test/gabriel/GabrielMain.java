@@ -1,23 +1,23 @@
 package gabriel;
 
-import control.daos.connection.Connection;
-import control.ControlException;
-import control.daos.DevelopmentDAO;
-import control.daos.EvidenceDAO;
-import control.daos.ProjectDAO;
-import control.daos.TaskDAO;
-import control.daos.UserDAO;
-import control.dtos.DevelopmentDTO;
-import control.dtos.ProjectDTO;
-import control.dtos.TaskDTO;
-import control.dtos.UserDTO;
+import asana_assistant_1.control.daos.connection.Connection;
+import asana_assistant_1.control.ControlException;
+import asana_assistant_1.control.daos.DevelopmentDAO;
+import asana_assistant_1.control.daos.EvidenceDAO;
+import asana_assistant_1.control.daos.ProjectDAO;
+import asana_assistant_1.control.daos.TaskDAO;
+import asana_assistant_1.control.daos.UserDAO;
+import asana_assistant_1.control.dtos.DevelopmentDTO;
+import asana_assistant_1.control.dtos.ProjectDTO;
+import asana_assistant_1.control.dtos.TaskDTO;
+import asana_assistant_1.control.dtos.UserDTO;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import model.Development;
-import model.Evidence;
-import model.User;
-import model.Project;
-import model.Task;
+import asana_assistant_1.model.Development;
+import asana_assistant_1.model.Evidence;
+import asana_assistant_1.model.User;
+import asana_assistant_1.model.Project;
+import asana_assistant_1.model.Task;
 
 
 

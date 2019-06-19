@@ -1,10 +1,10 @@
 package alejandro;
 
-import control.ControlException;
-import control.daos.EvidenceDAO;
+import asana_assistant_1.control.ControlException;
+import asana_assistant_1.control.daos.EvidenceDAO;
 import java.util.ArrayList;
 import java.util.List;
-import model.Evidence;
+import asana_assistant_1.model.Evidence;
 
 public class DummyEvidenceDAO extends EvidenceDAO{
 
